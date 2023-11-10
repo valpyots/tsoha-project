@@ -6,18 +6,28 @@
     <body>
         <h1>Welcome!</h1>
         <p>{% if session.user_id %}
+            <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
             <p>You are logged in as {{ username[0] }}</p>
             <a href="/logout">Log out</a>
-            <form action="/send" method="POST">
+            <h2>Make a new post!</h2>
+            <form action="/newtopic" method="POST">
             <p>Post something, anything:</p>
-            <input type="text" name="content"></p>
+            <p>Choose a category...</p><br>
+            <input type="text" name="category">
+            <p>Choose a title for your topic...</p></br>
+            <input type="text" name="title"><br/>
+            <p>You can expand on your topic with a message:</p>
+            <input type="text" name="message"></p><br>
+            <input type="submit" value="Post">
             </form>
-            <h2>Messages</h2>
-            <p>Current message count: {{ count }}</p>
-            {% for message in messages %}
-            <h3>{{message[1]}}:</h3></br>
-            Message: <p>{{message[0]}}</p></br>
-            Posted on {{message[2].strftime('%Y-%m-%d %H:%M:%S')}}</br></br>
+            <h2>Topics</h2>
+            <p>Current topic count: {{ count }}</p>
+            {% for topic in topics %}
+            <h3>{{topic[0]}}</h3></br>
+            Sent by:{{topic[2]}}<br>
+            <p>{{topic[1]}}</p></br>
+            Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br></br>
+            <a href="">Respond to this topic...</a>
             {%endfor%}
             {% else %}
             <h2>Already have an account? Log in:</h2>

@@ -6,7 +6,7 @@ import messages, users
 @app.route("/")
 def index():
     list = messages.get_list()
-    return render_template("index.html", count=len(list), messages=list, username = users.username())
+    return render_template("index.html", count=len(list), topics=list, username = users.username())
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -31,10 +31,21 @@ def logout():
     users.logout()
     return redirect("/")
 
-@app.route("/send", methods=["POST"])
-def send():
+@app.route("/newtopic", methods=["POST"])
+def newtopic():
+    #category = request.form["category"]
+    title = request.form["title"]
+    message = request.form["message"]
+    if messages.newtopic(title, message):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Failed to post new topic")
+
+@app.route("/respond", methods=["POST"])
+def respond():
     content = request.form["content"]
     if messages.send(content):
         return redirect("/")
     else:
-        return render_template("error.html", message="Posting failed")
+        return render_template("error.html", message="Failed to post response")
+
