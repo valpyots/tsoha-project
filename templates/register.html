@@ -4,22 +4,19 @@
         <title>Message Board Application</title>
     </head>
     <body>
-        <h1>Welcome!</h1>
-        <p>{% if session.user_id %}
-            <p>You are logged in as {{ session.username }}</p>
+        <p>{% if session.username %}
+            <p>You are already logged in as {{ session.username }}</p>
             <a href="/logout">Log out</a>
             {% else %}
-            <h2>Already have an account? Log in:</h2>
-            <form action="/login" method="POST">
+            <form action="/signup" method="POST">
             <p>Username:<br>
             <input type="text" name="username"></p>
             <p>Password:<br>
             <input type="password" name="password"></p>
-            <input type="submit" value="Log in">
+            <p>Repeat password:<br>
+            <input type="password" name="password2"></p>
+            <input type="submit" value="Sign up">
             </form>
-            <h2>Else, you can register here:</h2>
-            <p><a href="/signup">To registration</h></p>
-
             {% endif %}
             </p>
     </body>
