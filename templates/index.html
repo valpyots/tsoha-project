@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Message Board Application</title>
-    </head>
-    <body>
-        <h1>Welcome!</h1>
+{% extends "layout.html" %}
+{% block title %}Message Board Application{% endblock %}
+{% block content %}
+<div class="container overflow-hidden">
+    <div class="row gx-10">
+        <h1>Welcome!</h1><br>
+        <div class="col-10">
         <p>{% if session.user_id %}
             <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
             <p>You are logged in as {{ username[0] }}</p>
-            <a href="/logout">Log out</a>
-            <h2>Make a new post!</h2>
+            <a href="/logout">Log out</a></div><br>
+            <div class="col-5"><h2>Make a new post!</h2>
             <form action="/newtopic" method="POST">
             <p>Post something, anything:</p>
             <p>Choose a category...</p><br>
@@ -20,6 +20,8 @@
             <input type="text" name="message"></p><br>
             <input type="submit" value="Post">
             </form>
+        </div>
+        <div class="col-5">
             <h2>Topics</h2>
             <p>Current topic count: {{ count }}</p>
             {% for topic in topics %}
@@ -29,6 +31,7 @@
             Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br></br>
             <a href="">Respond to this topic...</a>
             {%endfor%}
+        </div>
             {% else %}
             <h2>Already have an account? Log in:</h2>
             <form action="/login" method="POST">
@@ -43,5 +46,6 @@
 
             {% endif %}
             </p>
-    </body>
-</html>
+        </div>
+        </div>
+{%endblock%}

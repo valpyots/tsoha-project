@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Message Board Application</title>
-    </head>
-    <body>
+{% extends "layout.html" %}
+{% block title %}Registration{% endblock %}
+{% block content %}
+    <div class="container">
         <p>{% if session.user_id %}
             <p>You are already logged in as {{ username }}</p>
             <a href="/logout">Log out</a>
@@ -19,5 +17,5 @@
             </form>
             {% endif %}
             </p>
-    </body>
-</html>
+    </div>
+{% endblock %}
