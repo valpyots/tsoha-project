@@ -1,5 +1,5 @@
-# tsoha-project
-Repositary for my course project for "Tietokannat ja web-ohjelmointi 2023, II periodi"
+# message-board-application
+A simple flask web application that functions as a message board. This applicaion is my course project for "Tietokannat ja web-ohjelmointi 2023, II periodi"
 
 My plan for this project is to create a simple message board application.
 
