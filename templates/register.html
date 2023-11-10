@@ -4,8 +4,8 @@
         <title>Message Board Application</title>
     </head>
     <body>
-        <p>{% if session.username %}
-            <p>You are already logged in as {{ session.username }}</p>
+        <p>{% if session.user_id %}
+            <p>You are already logged in as {{ username }}</p>
             <a href="/logout">Log out</a>
             {% else %}
             <form action="/signup" method="POST">

@@ -6,8 +6,19 @@
     <body>
         <h1>Welcome!</h1>
         <p>{% if session.user_id %}
-            <p>You are logged in as {{ session.username }}</p>
+            <p>You are logged in as {{ username[0] }}</p>
             <a href="/logout">Log out</a>
+            <form action="/send" method="POST">
+            <p>Post something, anything:</p>
+            <input type="text" name="content"></p>
+            </form>
+            <h2>Messages</h2>
+            <p>Current message count: {{ count }}</p>
+            {% for message in messages %}
+            <h3>{{message[1]}}:</h3></br>
+            Message: <p>{{message[0]}}</p></br>
+            Posted on {{message[2].strftime('%Y-%m-%d %H:%M:%S')}}</br></br>
+            {%endfor%}
             {% else %}
             <h2>Already have an account? Log in:</h2>
             <form action="/login" method="POST">

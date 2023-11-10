@@ -5,12 +5,14 @@ import messages, users
 
 @app.route("/")
 def index():
-    return render_template("/index.html")
+    list = messages.get_list()
+    return render_template("index.html", count=len(list), messages=list, username = users.username())
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     users.signup()
-    return render_template("/register.html")
+    return render_template("/register.html", username = users.username())
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -28,3 +30,11 @@ def login():
 def logout():
     users.logout()
     return redirect("/")
+
+@app.route("/send", methods=["POST"])
+def send():
+    content = request.form["content"]
+    if messages.send(content):
+        return redirect("/")
+    else:
+        return render_template("error.html", message="Posting failed")

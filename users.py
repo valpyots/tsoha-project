@@ -15,14 +15,14 @@ def signup():
         if password != password2:
             return render_template("error.html", message="Passwords do not match. Please try again.")
         hash_value = generate_password_hash(password)
-        sql = text("INSERT INTO users (name, password) VALUES (:name, :password)")
-        db.session.execute(sql, {"name":username, "password":hash_value})
+        sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
+        db.session.execute(sql, {"username":username, "password":hash_value})
         db.session.commit()
         return redirect("/")
 
 def login(username, password):
-    sql = text("SELECT id, password FROM users WHERE name=:name")
-    result = db.session.execute(sql, {"name":username})
+    sql = text("SELECT id, password FROM users WHERE username=:username")
+    result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
         return False
@@ -37,3 +37,12 @@ def login(username, password):
 def logout():
     del session["user_id"]
     return redirect("/")
+
+def user_id():
+    return session.get("user_id", 0)
+
+def username():
+    user_id = session.get("user_id", 0)
+    sql = text("SELECT username FROM users WHERE users.id=:user_id")
+    username = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    return username
