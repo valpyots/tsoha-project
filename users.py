@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 from sqlalchemy.sql import text
 
-def signup():
+def signup(username, password, password2):
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
@@ -13,12 +13,15 @@ def signup():
         password = request.form["password"]
         password2 = request.form["password2"]
         if password != password2:
-            return render_template("error.html", message="Passwords do not match. Please try again.")
+            return False
         hash_value = generate_password_hash(password)
-        sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
-        db.session.execute(sql, {"username":username, "password":hash_value})
-        db.session.commit()
-        return redirect("/")
+        try:
+            sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
+            db.session.execute(sql, {"username":username, "password":hash_value})
+            db.session.commit()
+        except:
+            return False
+        return True
 
 def login(username, password):
     sql = text("SELECT id, password FROM users WHERE username=:username")

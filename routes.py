@@ -11,8 +11,16 @@ def index():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    users.signup()
-    return render_template("/register.html", username = users.username())
+    if request.method == "GET":
+        return render_template("/register.html", username = users.username())
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        password2 = request.form["password2"]
+        if users.signup(username, password, password2):
+            return render_template("index.html", message="Registration succesful. You can now login.")
+        else:
+            return render_template("error.html", message="Registration failed.")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
