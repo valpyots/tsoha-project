@@ -1,11 +1,23 @@
 # message-board-application
-A simple flask web application that functions as a message board. This applicaion is my course project for "Tietokannat ja web-ohjelmointi 2023, II periodi"
+A simple flask web application that functions as a message board. This application is my course project for "Tietokannat ja web-ohjelmointi 2023, II periodi"
 
-My plan for this project is to create a simple message board application.
+Note that this application is currently not deployed anywhere. To test it:
 
-The application will allow an user to:
+ - Clone this repositary locally
+ - Create ".env" file at the project root
+ - In ".env", set DATABASE_URL=<your-psql-database-goes-here> and SECRET_KEY=<your-secret-key-goes-here>
+ - Activate virtual environment and install dependencies with the following commands:
+	$ python3 -m venv venv
+	$ source venv/bin/activate
+	$ pip install -r ./requirements.txt
+ - Set database schema with
+	$ psql < schema.sql
+- After the previous steps, you should be able to run the application locally with
+	$ flask run
 
-- post a new topic, choose a category for the post
+The application currently allows an user to:
+
+- post a new topic
 
 - respond to existing topics
 
@@ -13,14 +25,17 @@ The application will allow an user to:
 
 - allow others to view other user's profiles and their posts , if set to public
 
-- browse posts by category, date posted or amount of responses
+- browse all posts
 
-Users will be divided into two categories, regular users and admin users.
+Features that I still plan to implement:
 
-An admin user will also be able to:
+- admin user accounts, which  will also be able to:
 
-- delete any post or message
+	- delete any post or message
 
-- block an user from posting
+	- block an user from posting
 
-- view all profiles, even those set to private
+	- view all profiles, even those set to private
+
+- sorting posts by date or comment amount, both ascending and descending
+- post categories, sorting posts by category
