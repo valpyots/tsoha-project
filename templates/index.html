@@ -5,6 +5,8 @@
     <div class="row">
         <div class="col-sm">
         <h1>Welcome</h1>
+        <p>This is a simple message board application.</p>
+        <p>Need help? More <a href="/help">here.</a></p>
         </div>
         <div class="col-sm">
         <p>{% if session.user_id %}
@@ -17,12 +19,13 @@
         <div class="col-sm">
             <h2>Post a new topic</h2>
             <form action="/newtopic" method="POST">
-            <p><label for="category">Choose a category:</label></p><br>
+            <p><label for="category">Choose a category:</label></p>
             <input type="text" name="category">
-            <p><label for="title">Choose a title for your topic:</label></p></br>
-            <input type="text" name="title">
-            <p><label for="message">Start your topic with a message:</label></p>
-            <textarea name="message"></textarea></p><br>
+            <p><label for="title">Choose a title for your topic: (Required)</label></p>
+            <input type="text" name="title" maxlength="100" required>
+            <p><label for="message">Start your topic with a message:(0-5000 characters)</label></p>
+            <textarea name="message" maxlength="5000"></textarea></p>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Post">
             </form>
         </div>

@@ -4,6 +4,7 @@ from os import getenv
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 from sqlalchemy.sql import text
+import secrets
 
 def signup(username, password, password2):
     if request.method == "GET":
@@ -32,6 +33,7 @@ def login(username, password):
     else:
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
+            session["csrf_token"] = secrets.token_hex(16)
             return True
         else:
             return False

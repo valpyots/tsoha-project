@@ -4,12 +4,12 @@ from sqlalchemy.sql import text
 import users
 
 def get_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM topics T, users U WHERE T.user_id=U.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM topics T, users U WHERE T.user_id=U.id AND T.visible = true ORDER BY T.id DESC")
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_responses(topic_id):
-    sql = text("SELECT M.content, U.username, M.sent_at FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id ORDER BY M.id DESC")
+    sql = text("SELECT M.content, U.username, M.sent_at FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id AND M.visible = true ORDER BY M.id DESC")
     result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchall()
 
@@ -18,7 +18,7 @@ def newtopic(title, message):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = text("INSERT INTO topics (title, message, user_id, sent_at) VALUES (:title, :message, :user_id, NOW())")
+    sql = text("INSERT INTO topics (title, message, user_id, sent_at, visible) VALUES (:title, :message, :user_id, NOW(), true)")
     db.session.execute(sql, {"title": title, "message": message, "user_id": user_id,})
     db.session.commit()
     return True
@@ -28,7 +28,7 @@ def respond(content, topic_id):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = text("INSERT INTO messages (content, user_id, sent_at, topic_id) VALUES (:content, :user_id, NOW(), :topic_id)")
+    sql = text("INSERT INTO messages (content, user_id, sent_at, topic_id, visible) VALUES (:content, :user_id, NOW(), :topic_id, true)")
     db.session.execute(sql, {"content":content, "user_id":user_id, "topic_id":topic_id})
     db.session.commit()
     return True
@@ -46,5 +46,19 @@ def get_topic_title(topic_id):
 
 def get_topic_message(topic_id):
     sql = text("SELECT T.message FROM topics T WHERE T.id = :topic_id")
+    res = db.session.execute(sql, {"topic_id":topic_id})
+    return res.fetchone()
+
+def hide_topic(topic_id):
+    if topic_id == 0:
+        return False
+    else:
+        sql = text("UPDATE topics SET visible = false WHERE topics.id = :topic_id")
+        db.session.execute(sql, {"topic_id":topic_id})
+        db.session.commit()
+        return True
+    
+def get_topic_user(topic_id):
+    sql = text("SELECT user_id FROM topics T WHERE T.id = :topic_id")
     res = db.session.execute(sql, {"topic_id":topic_id})
     return res.fetchone()

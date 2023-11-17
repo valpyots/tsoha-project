@@ -9,9 +9,15 @@
             <p>You are logged in as {{ username[0] }}</p>
         <h3>{{title[0]}}</h3><br>
         <p>{{startmessage[0]}}</p><br>
+        {% if session.user_id == startuser[0] %}
+        <form action="/hidetopic/{{ topic }}" method="POST">
+        <input type="submit" value="Delete topic">
+        </form>
+        {%endif%}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Respond...</p>
             <input type="text" name="content"></p><br>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Post">
             </form>
             <h2>Responses</h2>
