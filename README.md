@@ -7,12 +7,17 @@ Note that this application is currently not deployed anywhere. To test it:
  - Create ".env" file at the project root
  - In ".env", set DATABASE_URL=<your-psql-database-goes-here> and SECRET_KEY=<your-secret-key-goes-here>
  - Activate virtual environment and install dependencies with the following commands:
+	
 	$ python3 -m venv venv
+	
 	$ source venv/bin/activate
+	
 	$ pip install -r ./requirements.txt
  - Set database schema with
+	
 	$ psql < schema.sql
 - After the previous steps, you should be able to run the application locally with
+	
 	$ flask run
 
 The application currently allows an user to:
