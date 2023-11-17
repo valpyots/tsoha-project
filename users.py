@@ -6,19 +6,16 @@ from db import db
 from sqlalchemy.sql import text
 import secrets
 
-def signup(username, password, password2):
+def signup(username, password, password2, visibility):
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        password2 = request.form["password2"]
         if password != password2:
             return False
         hash_value = generate_password_hash(password)
         try:
-            sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
-            db.session.execute(sql, {"username":username, "password":hash_value})
+            sql = text("INSERT INTO users (username, password, profileVisible, canPost, isAdmin) VALUES (:username, :password, :visibility, true, false)")
+            db.session.execute(sql, {"username":username, "password":hash_value, "visibility":visibility})
             db.session.commit()
         except:
             return False
@@ -66,3 +63,8 @@ def admin_get_user_topics(user_id):
     sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchall()
     return res
+
+def get_profile_visibility(user_id):
+    sql = text("SELECT U.profileVisible FROM Users U WHERE U.id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    return bool(res[0])

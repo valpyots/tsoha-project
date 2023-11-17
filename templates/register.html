@@ -8,12 +8,15 @@
             {% else %}
             {{message}}
             <form action="/signup" method="POST">
-            <p>Username (Between 1-20 characters):<br>
+            <p><label for="username">Username (Between 1-20 characters):</label><br>
             <input type="text" name="username" maxlength="20" required></p>
             <p>Password:<br>
             <input type="password" name="password" required></p>
-            <p>Repeat password:<br>
+            <p><label for="password">Repeat password:</label><br>
             <input type="password" name="password2" required></p>
+            <label for="visibility">Allow other users to see your profile?</label><br>
+            Yes: <input type="radio" name="visibility" id="visible" value="True"><br>
+            No: <input type="radio" name="visibility" id="invisible" value="False"><br>
             <input type="submit" value="Sign up">
             </form>
             {% endif %}

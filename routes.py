@@ -17,7 +17,8 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
         password2 = request.form["password2"]
-        if users.signup(username, password, password2):
+        visibility = request.form["visibility"]
+        if users.signup(username, password, password2, visibility):
             return render_template("index.html", message="Registration succesful. You can now login.")
         else:
             return render_template("error.html", message="Registration failed.")
@@ -86,7 +87,8 @@ def userpage(user_id):
     profilename = users.get_username(user_id)
     list = users.get_user_topics(user_id)
     adminlist = users.admin_get_user_topics(user_id)
+    visibility = users.get_profile_visibility(user_id)
     if session["user_id"] == user_id:
-        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist))
+        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True)
     else:
-        return render_template("userpage.html", message="This is another user's profile.", profilename = profilename, profileposts = list, postamount = len(list))
+        return render_template("userpage.html", message="This is another user's profile.", profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility)
