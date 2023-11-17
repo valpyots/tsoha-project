@@ -58,7 +58,7 @@ def respond(topic):
     startmessage = messages.get_topic_message(topic)
     startuser = messages.get_topic_user(topic)
     if request.method == "GET":
-        return render_template("respond.html", topic=topic, messages=list, title=title, startuser = startuser, startmessage=startmessage, username=users.username())
+        return render_template("respond.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username())
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
@@ -75,7 +75,7 @@ def help():
 
 @app.route("/hidetopic/<int:topic>", methods=["POST"])
 def hidetopic(topic):
-    if session["user_id"] == messages.get_topic_user(topic)[0]:
+    if session["user_id"] == messages.get_topic_user(topic)[0][0]:
         messages.hide_topic(topic)
         return redirect("/")
     else:

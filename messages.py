@@ -36,7 +36,6 @@ def respond(content, topic_id):
 def get_topic_id(topic_title):
     sql = text("SELECT T.id FROM Topic T WHERE T.title = :topic_title")
     res = db.session.execute(sql, {"topic_title":topic_title})
-
     return res.fetchone()
 
 def get_topic_title(topic_id):
@@ -59,6 +58,6 @@ def hide_topic(topic_id):
         return True
     
 def get_topic_user(topic_id):
-    sql = text("SELECT user_id FROM topics T WHERE T.id = :topic_id")
+    sql = text("SELECT T.user_id, U.username FROM topics T, Users U WHERE T.id = :topic_id AND T.user_id = U.id")
     res = db.session.execute(sql, {"topic_id":topic_id})
-    return res.fetchone()
+    return res.fetchall()

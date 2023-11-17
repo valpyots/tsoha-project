@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Respond to {{topic_title}}{% endblock %}
+{% block title %}Respond to {{title[0]}}{% endblock %}
 {% block content %}
 <div class="container overflow-hidden">
     <div class="row">
@@ -9,10 +9,13 @@
             <p>You are logged in as {{ username[0] }}</p>
         <h3>{{title[0]}}</h3><br>
         <p>{{startmessage[0]}}</p><br>
-        {% if session.user_id == startuser[0] %}
+        {% if session.user_id == startuser[0][0] %}
+        <p>Posted by you</p><br>
         <form action="/hidetopic/{{ topic }}" method="POST">
         <input type="submit" value="Delete topic">
         </form>
+        {% else %}
+        <p>Posted by {{ startuser[0][1] }}</p><br>
         {%endif%}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Respond...</p>
