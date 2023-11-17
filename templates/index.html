@@ -2,34 +2,41 @@
 {% block title %}Message Board Application{% endblock %}
 {% block content %}
 <div class="container overflow-hidden">
-    <div class="row gx-10">
-        <h1>Welcome!</h1><br>
-        <div class="col-10">
+    <div class="row">
+        <div class="col-sm">
+        <h1>Welcome!</h1>
+        </div>
+        <div class="col-sm">
         <p>{% if session.user_id %}
             <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
             <p>You are logged in as {{ username[0] }}</p>
             <a href="/logout">Log out</a></div><br>
-            <div class="col-5"><h2>Make a new post!</h2>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-sm"><h2>Make a new post!</h2>
             <form action="/newtopic" method="POST">
             <p>Post something, anything:</p>
             <p>Choose a category...</p><br>
             <input type="text" name="category">
             <p>Choose a title for your topic...</p></br>
             <input type="text" name="title"><br/>
-            <p>You can expand on your topic with a message:</p>
+            <p>Message:</p>
             <input type="text" name="message"></p><br>
             <input type="submit" value="Post">
             </form>
-        </div>
-        <div class="col-5">
+            </div>
+        <div class="col-sm">
             <h2>Topics</h2>
             <p>Current topic count: {{ count }}</p>
             {% for topic in topics %}
             <h3>{{topic[0]}}</h3></br>
             Sent by:{{topic[2]}}<br>
             <p>{{topic[1]}}</p></br>
-            Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br></br>
-            <a href="">Respond to this topic...</a>
+            Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br>
+            <form action="/respond/{{topic[4]}}" method="GET">
+            <input type="submit" value="Comment">
+            </form>
             {%endfor%}
         </div>
             {% else %}
@@ -48,5 +55,5 @@
             {% endif %}
             </p>
         </div>
-        </div>
+    </div>
 {%endblock%}

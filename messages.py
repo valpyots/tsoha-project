@@ -4,8 +4,13 @@ from sqlalchemy.sql import text
 import users
 
 def get_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at FROM topics T, users U WHERE T.user_id=U.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM topics T, users U WHERE T.user_id=U.id ORDER BY T.id DESC")
     result = db.session.execute(sql)
+    return result.fetchall()
+
+def get_responses(topic_id):
+    sql = text("SELECT M.content, U.username, M.sent_at FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id ORDER BY M.id DESC")
+    result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchall()
 
 #Function for posting a new topic
@@ -27,3 +32,19 @@ def respond(content, topic_id):
     db.session.execute(sql, {"content":content, "user_id":user_id, "topic_id":topic_id})
     db.session.commit()
     return True
+
+def get_topic_id(topic_title):
+    sql = text("SELECT T.id FROM Topic T WHERE T.title = :topic_title")
+    res = db.session.execute(sql, {"topic_title":topic_title})
+
+    return res.fetchone()
+
+def get_topic_title(topic_id):
+    sql = text("SELECT T.title FROM topics T WHERE T.id = :topic_id")
+    res = db.session.execute(sql, {"topic_id":topic_id})
+    return res.fetchone()
+
+def get_topic_message(topic_id):
+    sql = text("SELECT T.message FROM topics T WHERE T.id = :topic_id")
+    res = db.session.execute(sql, {"topic_id":topic_id})
+    return res.fetchone()

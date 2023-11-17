@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Respond to {{topic_title}}{% endblock %}
+{% block content %}
+<div class="container overflow-hidden">
+    <div class="row">
+        <div class="col-sm">
+        <p>{% if session.user_id %}
+            <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
+            <p>You are logged in as {{ username[0] }}</p>
+        <h3>{{title[0]}}</h3><br>
+        <p>{{startmessage[0]}}</p><br>
+            <form action="/respond/{{ topic }}" method="POST">
+            <p>Respond...</p>
+            <input type="text" name="content"></p><br>
+            <input type="submit" value="Post">
+            </form>
+            <h2>Responses</h2>
+            {% for message in messages %}
+            {{message[0]}}<br>
+            <p>{{message[1]}}</p></br>
+            Posted on {{message[2].strftime('%Y-%m-%d %H:%M:%S')}}</br>
+            {%endfor%}
+        </div>
+            {% else %}
+            {{message}}
+            <h2>You need to log in to respond:</h2>
+            <form action="/login" method="POST">
+            <p>Username:<br>
+            <input type="text" name="username"></p>
+            <p>Password:<br>
+            <input type="password" name="password"></p>
+            <input type="submit" value="Log in">
+            </form>
+            <h2>If you don't have an account, you can register here:</h2>
+            <p><a href="/signup">To registration</h></p>
+
+            {% endif %}
+            </p>
+        </div>
+    </div>
+{%endblock%}

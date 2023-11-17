@@ -41,7 +41,7 @@ def logout():
 
 @app.route("/newtopic", methods=["POST"])
 def newtopic():
-    #category = request.form["category"]
+    #category = request.form["category"] 
     title = request.form["title"]
     message = request.form["message"]
     if messages.newtopic(title, message):
@@ -49,11 +49,20 @@ def newtopic():
     else:
         return render_template("error.html", message="Failed to post new topic")
 
-@app.route("/respond", methods=["POST"])
-def respond():
-    content = request.form["content"]
-    if messages.send(content):
-        return redirect("/")
-    else:
-        return render_template("error.html", message="Failed to post response")
+@app.route("/respond/<int:topic>", methods=["GET", "POST"])
+def respond(topic):
+    list = messages.get_responses(topic)
+    title = messages.get_topic_title(topic)
+    startmessage = messages.get_topic_message(topic)
+    if request.method == "GET":
+        return render_template("respond.html", topic=topic, messages=list, title=title, startmessage=startmessage, username=users.username())
+    if request.method == "POST":
+        content = request.form["content"]
+        if messages.respond(content, topic):
+            return redirect("/respond/" + str(topic))
+        else:
+            return render_template("error.html", message="Failed to post response")
 
+@app.route("/help", methods=["GET"])
+def help():
+    return render_template("help.html")
