@@ -67,4 +67,7 @@ def admin_get_user_topics(user_id):
 def get_profile_visibility(user_id):
     sql = text("SELECT U.profileVisible FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
-    return bool(res[0])
+    try:
+        return bool(res[0])
+    except:
+        return False

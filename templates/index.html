@@ -11,7 +11,7 @@
         <div class="col-sm">
         <p>{% if session.user_id %}
             <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
-            <p>You are logged in as {{ username[0] }}</p>
+            <p>You are logged in as <a href="/userpage/{{session.user_id}}">{{ username[0] }}</a></p>
             </div>
             <br>
         </div>
@@ -33,9 +33,9 @@
             <h2>Topics</h2>
             <p>Current topic count: {{ count }}</p>
             {% for topic in topics %}
-            <h3>{{topic[0]}}</h3></br>
-            Sent by:{{topic[2]}}<br>
-            <p>{{topic[1]}}</p></br>
+            <h3>{{ topic[0] }}</h3></br>
+            Sent by:<a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a><br>
+            <p>{{ topic[1] }}</p></br>
             Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br>
             <form action="/respond/{{topic[4]}}" method="GET">
             <input type="submit" value="Comment">
