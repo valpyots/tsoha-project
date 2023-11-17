@@ -5,8 +5,8 @@ import users
 
 def get_list():
     sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM topics T, users U WHERE T.user_id=U.id AND T.visible = true ORDER BY T.id DESC")
-    result = db.session.execute(sql)
-    return result.fetchall()
+    res = db.session.execute(sql).fetchall()
+    return res
 
 def get_responses(topic_id):
     sql = text("SELECT M.content, U.username, M.sent_at FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id AND M.visible = true ORDER BY M.id DESC")

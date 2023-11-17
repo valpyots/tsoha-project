@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}{{profilename[0]}}'s profile{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <p>{{ message }}</p>
+            <p>User has posted {{postamount}} times.</p>
+            {% for post in profileposts %}
+            <h2>{{post[0]}}</h2>
+            <p>{{post[1]}}</p>
+            <form action="/respond/{{post[2]}}" method="GET">
+            <input type="submit" value="Comment">
+            </form>
+            {%endfor%}
+            {% if postamount == 0 %}
+            <p> Seems {{profilename[0]}} has yet to post anything, or you aren't allowed to view their posts</p>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{%endblock%}

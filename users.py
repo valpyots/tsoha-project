@@ -51,3 +51,18 @@ def username():
     sql = text("SELECT username FROM users WHERE users.id=:user_id")
     username = db.session.execute(sql, {"user_id":user_id}).fetchone()
     return username
+
+def get_username(user_id):
+    sql = text("SELECT U.username FROM Users U WHERE U.id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    return res
+
+def get_user_topics(user_id):
+    sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id AND T.visible = true")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchall()
+    return res
+
+def admin_get_user_topics(user_id):
+    sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchall()
+    return res

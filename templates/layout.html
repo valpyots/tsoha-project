@@ -7,7 +7,7 @@
     <body>
         <div class="container">
         {%if session.user_id%}
-        <div class="row"><div class="col-sm"><a href="/">Front Page</a></div><div class="col-sm"><a href="/">User Page</a></div><div class="col-sm"><a href="/help">Help</a></div><div class="col-sm"><a href="/logout">Log out</a></div></div>
+        <div class="row"><div class="col-sm"><a href="/">Front Page</a></div><div class="col-sm"><a href="/userpage/{{session.user_id}}">User Page</a></div><div class="col-sm"><a href="/help">Help</a></div><div class="col-sm"><a href="/logout">Log out</a></div></div>
         {%else%}
         <div class="row"><div class="col-sm"><a href="/">Front Page</a></div><div class="col-sm"><a href="/help">Help</a></div></div>
         {%endif%}

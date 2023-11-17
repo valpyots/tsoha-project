@@ -80,3 +80,13 @@ def hidetopic(topic):
         return redirect("/")
     else:
         return render_template("error.html", message="You do not have permission to delete this topic")
+    
+@app.route("/userpage/<int:user_id>", methods=["GET"])
+def userpage(user_id):
+    profilename = users.get_username(user_id)
+    list = users.get_user_topics(user_id)
+    adminlist = users.admin_get_user_topics(user_id)
+    if session["user_id"] == user_id:
+        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist))
+    else:
+        return render_template("userpage.html", message="This is another user's profile.", profilename = profilename, profileposts = list, postamount = len(list))
