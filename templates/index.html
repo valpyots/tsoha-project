@@ -1,31 +1,31 @@
 {% extends "layout.html" %}
 {% block title %}Message Board Application{% endblock %}
 {% block content %}
-<div class="container overflow-hidden">
+<div class="container">
     <div class="row">
         <div class="col-sm">
-        <h1>Welcome!</h1>
+        <h1>Welcome</h1>
         </div>
         <div class="col-sm">
         <p>{% if session.user_id %}
             <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
             <p>You are logged in as {{ username[0] }}</p>
-            <a href="/logout">Log out</a></div><br>
             </div>
+            <br>
         </div>
-        <div class="row justify-content-md-center">
-            <div class="col-sm"><h2>Make a new post!</h2>
+        <div class="row">
+        <div class="col-sm">
+            <h2>Post a new topic</h2>
             <form action="/newtopic" method="POST">
-            <p>Post something, anything:</p>
-            <p>Choose a category...</p><br>
+            <p><label for="category">Choose a category:</label></p><br>
             <input type="text" name="category">
-            <p>Choose a title for your topic...</p></br>
-            <input type="text" name="title"><br/>
-            <p>Message:</p>
-            <input type="text" name="message"></p><br>
+            <p><label for="title">Choose a title for your topic:</label></p></br>
+            <input type="text" name="title">
+            <p><label for="message">Start your topic with a message:</label></p>
+            <textarea name="message"></textarea></p><br>
             <input type="submit" value="Post">
             </form>
-            </div>
+        </div>
         <div class="col-sm">
             <h2>Topics</h2>
             <p>Current topic count: {{ count }}</p>
@@ -39,6 +39,7 @@
             </form>
             {%endfor%}
         </div>
+    </div>
             {% else %}
             {{message}}
             <h2>Already have an account? Log in:</h2>
