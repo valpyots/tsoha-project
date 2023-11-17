@@ -14,8 +14,8 @@ def signup(username, password, password2, visibility):
             return False
         hash_value = generate_password_hash(password)
         try:
-            sql = text("INSERT INTO users (username, password, profileVisible, canPost, isAdmin) VALUES (:username, :password, :visibility, true, false)")
-            db.session.execute(sql, {"username":username, "password":hash_value, "visibility":visibility})
+            sql = text("INSERT INTO users (username, password, profileVisible, canPost, isAdmin) VALUES (:username, :password, :profileVisible, true, false)")
+            db.session.execute(sql, {"username":username, "password":hash_value, "profileVisible":visibility})
             db.session.commit()
         except:
             return False
