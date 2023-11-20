@@ -6,7 +6,8 @@ from db import db
 from sqlalchemy.sql import text
 import secrets
 
-def signup(username, password, password2, visibility):
+#Function for registration functionality
+def register(username, password, password2, visibility):
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
@@ -21,6 +22,7 @@ def signup(username, password, password2, visibility):
             return False
         return True
 
+#Function allows registered users to log in, creating an user session. CSRF session is also created for security.
 def login(username, password):
     sql = text("SELECT id, password FROM users WHERE username=:username")
     res = db.session.execute(sql, {"username":username})
@@ -35,35 +37,42 @@ def login(username, password):
         else:
             return False
 
-
+#Function deletes user session
 def logout():
     del session["user_id"]
+    del session["csrf_token"]
     return redirect("/")
 
+#Function returns current user session user's id
 def user_id():
     return session.get("user_id", 0)
 
+#Function return current user session users's username
 def username():
     user_id = session.get("user_id", 0)
     sql = text("SELECT username FROM users WHERE users.id=:user_id")
     username = db.session.execute(sql, {"user_id":user_id}).fetchone()
     return username
 
+#Function returns username for given user id
 def get_username(user_id):
     sql = text("SELECT U.username FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchone()
 
+#Function returns all non-deleted topics posted by the user
 def get_user_topics(user_id):
     sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id AND T.visible = true")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchall()
 
+#Function return all topis postes by user, even deleted ones
 def admin_get_user_topics(user_id):
     sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchall()
 
+#Function returns boolean value for whether or not a given user's profile is private
 def get_profile_visibility(user_id):
     sql = text("SELECT U.profileVisible FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
@@ -71,7 +80,8 @@ def get_profile_visibility(user_id):
         return bool(res[0])
     except:
         return False
-    
+
+#Function returns boolean value for whether or not a given user is an admin user
 def get_admin_status(user_id):
     sql = text("SELECT U.isAdmin FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()

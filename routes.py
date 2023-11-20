@@ -18,7 +18,7 @@ def register():
         password = request.form["password"]
         password2 = request.form["password2"]
         visibility = request.form["visibility"]
-        if users.signup(username, password, password2, visibility):
+        if users.register(username, password, password2, visibility):
             return render_template("index.html", message="Registration succesful. You can now login.")
         else:
             return render_template("error.html", message="Registration failed.")
