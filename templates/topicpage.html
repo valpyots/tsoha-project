@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Respond to {{title[0]}}{% endblock %}
+{% block title %}Respond to {{ title[0] }}{% endblock %}
 {% block content %}
 <div class="container overflow-hidden">
     <div class="row">
@@ -15,13 +15,13 @@
         <input type="submit" value="Delete topic">
         </form>
         {% elif adminstatus %}
-        <p>Posted by <a href="/userpage/{{startuser[0][0]}}">{{ startuser[0][1] }}</a></p><br>
+        <p>Posted by <a href="/userpage/{{ startuser[0][0] }}">{{ startuser[0][1] }}</a></p><br>
         <form action="/hidetopic/{{ topic }}" method="POST">
         <input type="submit" value="Delete topic">
         </form>
         {% else %}
-        <p>Posted by <a href="/userpage/{{startuser[0][0]}}">{{ startuser[0][1] }}</a></p><br>
-        {%endif%}
+        <p>Posted by <a href="/userpage/{{ startuser[0][0] }}">{{ startuser[0][1] }}</a></p><br>
+        {% endif %}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Respond...</p>
             <input type="text" name="content"></p><br>
@@ -30,13 +30,13 @@
             </form>
             <h2>Responses</h2>
             {% for message in messages %}
-            {{message[0]}}<br>
-            <p><a href="/userpage/{{message[3]}}">{{message[1]}}</a></p></br>
-            Posted on {{message[2].strftime('%Y-%m-%d %H:%M:%S')}}</br>
-            {%endfor%}
+            {{ message[0] }}<br>
+            <p><a href="/userpage/{{message[3]}}">{{ message[1] }}</a></p></br>
+            Posted on {{ message[2].strftime('%Y-%m-%d %H:%M:%S') }}</br>
+            {% endfor %}
         </div>
             {% else %}
-            {{message}}
+            {{ message }}
             <h2>You need to log in to respond:</h2>
             <form action="/login" method="POST">
             <p>Username:<br>

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{%block title%}{%endblock%}</title>
+        <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     </head>
     <body>
         <div class="container">
-        {%if session.user_id%}
+        {% if session.user_id %}
         <div class="row"><div class="col-sm"><a href="/">Front Page</a></div><div class="col-sm"><a href="/userpage/{{session.user_id}}">User Page</a></div><div class="col-sm"><a href="/help">Help</a></div><div class="col-sm"><a href="/logout">Log out</a></div></div>
-        {%else%}
+        {% else %}
         <div class="row"><div class="col-sm"><a href="/">Front Page</a></div><div class="col-sm"><a href="/help">Help</a></div></div>
-        {%endif%}
+        {% endif %}
         </div>
-        {%block content%}{%endblock%}    
+        {% block content %}{% endblock %}    
     </body>

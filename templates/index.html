@@ -36,15 +36,15 @@
             <h3>{{ topic[0] }}</h3></br>
             Sent by:<a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a><br>
             <p>{{ topic[1] }}</p></br>
-            Posted on {{topic[3].strftime('%Y-%m-%d %H:%M:%S')}}</br>
+            Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</br>
             <form action="/respond/{{topic[4]}}" method="GET">
             <input type="submit" value="Comment">
             </form>
-            {%endfor%}
+            {% endfor %}
         </div>
     </div>
             {% else %}
-            {{message}}
+            {{ message }}
             <h2>Already have an account? Log in:</h2>
             <form action="/login" method="POST">
             <p>Username:<br>
@@ -54,10 +54,10 @@
             <input type="submit" value="Log in">
             </form>
             <h2>Else, you can register here:</h2>
-            <p><a href="/signup">To registration</h></p>
+            <p><a href="/register">To registration</h></p>
 
             {% endif %}
             </p>
         </div>
     </div>
-{%endblock%}
+{% endblock %}

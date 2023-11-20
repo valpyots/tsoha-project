@@ -6,8 +6,8 @@
             <p>You are already logged in as {{ username }}</p>
             <a href="/logout">Log out</a>
             {% else %}
-            {{message}}
-            <form action="/signup" method="POST">
+            {{ message }}
+            <form action="/register" method="POST">
             <p><label for="username">Username (Between 1-20 characters):</label><br>
             <input type="text" name="username" maxlength="20" required></p>
             <p>Password:<br>
@@ -17,7 +17,7 @@
             <label for="visibility">Allow other users to see your profile?</label><br>
             Yes: <input type="radio" name="visibility" value="True"><br>
             No: <input type="radio" name="visibility" value="False"><br>
-            <input type="submit" value="Sign up">
+            <input type="submit" value="Register new account">
             </form>
             {% endif %}
             </p>

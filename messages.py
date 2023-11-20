@@ -3,7 +3,7 @@ from db import db
 from sqlalchemy.sql import text
 import users
 
-def get_list():
+def get_topic_list():
     sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id FROM topics T, users U WHERE T.user_id=U.id AND T.visible = true ORDER BY T.id DESC")
     res = db.session.execute(sql).fetchall()
     return res

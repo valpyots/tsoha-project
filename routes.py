@@ -5,12 +5,12 @@ import messages, users
 
 @app.route("/")
 def index():
-    list = messages.get_list()
-    return render_template("index.html", count=len(list), topics=list, username = users.username())
+    topiclist = messages.get_topic_list()
+    return render_template("index.html", count=len(topiclist), topics=topiclist, username = users.username())
 
-
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
+# Route functionality for new user registrations
+@app.route("/register", methods=["GET", "POST"])
+def register():
     if request.method == "GET":
         return render_template("/register.html", username = users.username())
     if request.method == "POST":
@@ -60,7 +60,7 @@ def respond(topic):
     startuser = messages.get_topic_user(topic)
     adminstatus = users.get_admin_status(session["user_id"])
     if request.method == "GET":
-        return render_template("respond.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
+        return render_template("topicpage.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
