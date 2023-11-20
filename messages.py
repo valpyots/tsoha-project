@@ -109,6 +109,6 @@ def get_category_name(catid):
     return res.fetchone()[0]
 
 def get_category_topics(catid):
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM Topics T, Categories C, Users U WHERE T.user_id = U.id AND T.categoryid = C.id AND C.id = :catid")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM Topics T, Categories C, Users U WHERE T.user_id = U.id AND T.categoryid = C.id AND C.id = :catid AND T.visible = true")
     res = db.session.execute(sql, {"catid":catid})
     return res.fetchall()
