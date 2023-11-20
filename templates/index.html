@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm">
+        <div class="col">
         <p>{% if session.user_id %}
             <!--- If user is logged in, show their username and allow them to post a topic or browse existing ones-->
             <p>You are logged in as <a href="/userpage/{{session.user_id}}">{{ username[0] }}</a></p>

@@ -42,7 +42,7 @@ def logout():
 
 @app.route("/newtopic", methods=["POST"])
 def newtopic():
-    category = request.form["category"] 
+    category = request.form["category"].lower()
     title = request.form["title"]
     message = request.form["message"]
     if session["csrf_token"] != request.form["csrf_token"]:
