@@ -15,7 +15,7 @@
             <h2>Post a new topic</h2>
             <form action="/newtopic" method="POST">
             <p><label for="category">Choose a category:</label></p>
-            <input type="text" name="category">
+            <input type="text" name="category" value="None">
             <p><label for="title">Choose a title for your topic: (Required)</label></p>
             <input type="text" name="title" maxlength="100" required>
             <p><label for="message">Start your topic with a message:(0-5000 characters)</label></p>
@@ -29,6 +29,7 @@
             <p>Current topic count: {{ count }}</p>
             {% for topic in topics %}
             <h3>{{ topic[0] }}</h3></br>
+            <p>In category {{ topic[6] }}</p><br>
             Sent by:<a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a><br>
             <p>{{ topic[1] }}</p></br>
             Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</br>

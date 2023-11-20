@@ -8,6 +8,7 @@
             <!--- If user is logged in, show their username and allow them to respond to topic-->
             <p>You are logged in as {{ username[0] }}</p>
         <h3>{{ title[0] }}</h3><br>
+        <p>In category {{ category }}</p>
         <p>{{ startmessage[0] }}</p><br>
         {% if session.user_id == startuser[0][0] %}
         <p>Posted by you</p><br>

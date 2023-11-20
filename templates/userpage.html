@@ -9,6 +9,7 @@
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
             {% for post in profileposts %}
             <h2>{{ post[0] }}</h2>
+            <p> In category {{ post[3] }}</p>
             <p>{{ post[1] }}</p>
             <form action="/respond/{{ post[2] }}" method="GET">
             <input type="submit" value="Comment">
