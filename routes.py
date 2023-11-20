@@ -48,7 +48,7 @@ def newtopic():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", message="Forbidden")
     if messages.newtopic(title, message):
-        return render_template("index.html", message="New topic posted succesfully", username = users.username())
+        return redirect("/")
     else:
         return render_template("error.html", message="Failed to post new topic")
 
