@@ -1,5 +1,5 @@
 CREATE TABLE categories (ID SERIAL PRIMARY KEY, name TEXT);
-CREATE TABLE messages (ID SERIAL PRIMARY KEY, content TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, topic_id REFERENCES topics, category_id REFERENCES categories);
-CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, profileVisible BOOLEAN, canPost BOOLEAN, isAdmin BOOLEAN);
-CREATE TABLE topics (ID SERIAL PRIMARY KEY, category INTEGER  REFERENCES categories, message TEXT, title TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, visible BOOLEAN);
+CREATE TABLE messages (ID SERIAL PRIMARY KEY, content TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, topic_id REFERENCES topics);
+CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, profilevisible BOOLEAN, canpost BOOLEAN, isAdmin BOOLEAN);
+CREATE TABLE topics (ID SERIAL PRIMARY KEY message TEXT, title TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, visible BOOLEAN, categoryid INTEGER  REFERENCES categories);
 
