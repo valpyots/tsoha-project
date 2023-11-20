@@ -5,7 +5,7 @@ import users
 
 #Function returns all topics
 def get_topic_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id FROM topics T, users U WHERE T.user_id=U.id AND T.visible = true ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql).fetchall()
     return res
 
@@ -16,12 +16,16 @@ def get_responses(topic_id):
     return result.fetchall()
 
 #Function for posting a new topic
-def newtopic(title, message):
+def newtopic(title, message, categoryname):
+    if check_category(categoryname) == False:
+        categoryid = create_category(categoryname)
+    else:
+        categoryid = get_category_id(categoryname)
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = text("INSERT INTO topics (title, message, user_id, sent_at, visible) VALUES (:title, :message, :user_id, NOW(), true)")
-    db.session.execute(sql, {"title": title, "message": message, "user_id": user_id,})
+    sql = text("INSERT INTO topics (title, message, user_id, sent_at, visible, categoryid) VALUES (:title, :message, :user_id, NOW(), true, :categoryid)")
+    db.session.execute(sql, {"title": title, "message": message, "user_id": user_id, "categoryid": categoryid})
     db.session.commit()
     return True
 
@@ -68,3 +72,38 @@ def get_topic_user(topic_id):
     sql = text("SELECT T.user_id, U.username FROM topics T, Users U WHERE T.id = :topic_id AND T.user_id = U.id")
     res = db.session.execute(sql, {"topic_id":topic_id})
     return res.fetchall()
+
+#Function to create category
+def create_category(catname):
+    sql = text("INSERT INTO categories (name) VALUES (:catname)")
+    db.session.execute(sql, {"catname":catname})
+    db.session.commit()
+    sql = text("SELECT C.id FROM categories C WHERE c.name = :catname")
+    res = db.session.execute(sql, {"catname": catname}).fetchone()
+    return res[0]
+
+#Function to return category id by category name
+def get_category_id(catname):
+    sql = text("SELECT C.id FROM categories C WHERE C.name = :catname")
+    res = db.session.execute(sql, {"catname":catname})
+    return res.fetchone()[0]
+
+#Function to check if category already exists
+def check_category(catname):
+    sql = text("SELECT C.name FROM categories C WHERE C.name = :catname")
+    res = db.session.execute(sql, {"catname":catname}).fetchall()
+    if len(res) > 0:
+        return True
+    else:
+        return False
+    
+#Function to return topic category
+def get_topic_category(topic_id):
+    sql = text("SELECT T.categoryid FROM Topics T WHERE T.id = :topic_id")
+    res = db.session.execute(sql, {"topic_id":topic_id}).fetchone()
+    return res[0]
+
+def get_category_name(catid):
+    sql = text("SELECT C.name FROM categories C WHERE C.id = :catid")
+    res = db.session.execute(sql, {"catid":catid})
+    return res.fetchone()[0]

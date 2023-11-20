@@ -42,12 +42,12 @@ def logout():
 
 @app.route("/newtopic", methods=["POST"])
 def newtopic():
-    #category = request.form["category"] 
+    category = request.form["category"] 
     title = request.form["title"]
     message = request.form["message"]
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", message="Forbidden")
-    if messages.newtopic(title, message):
+    if messages.newtopic(title, message, category):
         return redirect("/")
     else:
         return render_template("error.html", message="Failed to post new topic")
@@ -58,9 +58,10 @@ def respond(topic):
     title = messages.get_topic_title(topic)
     startmessage = messages.get_topic_message(topic)
     startuser = messages.get_topic_user(topic)
+    category = messages.get_category_name(messages.get_topic_category(topic))
     adminstatus = users.get_admin_status(session["user_id"])
     if request.method == "GET":
-        return render_template("topicpage.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
+        return render_template("topicpage.html", topic=topic, category=category, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
