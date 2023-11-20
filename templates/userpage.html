@@ -9,11 +9,12 @@
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
             {% for post in profileposts %}
             <h2>{{ post[0] }}</h2>
-            <p> In category {{ post[3] }}</p>
+            <p> In category <a href="/category/{{ post[4] }}">{{ post[3] }}</a></p>
             <p>{{ post[1] }}</p>
             <form action="/respond/{{ post[2] }}" method="GET">
             <input type="submit" value="Comment">
             </form>
+            <hr>
             {% endfor %}
             {% if postamount == 0 %}
             <p> Seems {{ profilename[0] }} has yet to post anything</p>

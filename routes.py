@@ -58,10 +58,11 @@ def respond(topic):
     title = messages.get_topic_title(topic)
     startmessage = messages.get_topic_message(topic)
     startuser = messages.get_topic_user(topic)
-    category = messages.get_category_name(messages.get_topic_category(topic))
+    categoryid = messages.get_topic_category(topic)
+    category = messages.get_category_name(categoryid)
     adminstatus = users.get_admin_status(session["user_id"])
     if request.method == "GET":
-        return render_template("topicpage.html", topic=topic, category=category, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
+        return render_template("topicpage.html", topic=topic, category=category, categoryid = categoryid, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
@@ -97,3 +98,9 @@ def userpage(user_id):
         return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True)
     else:
         return render_template("userpage.html", message="This is another user's profile.", profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility)
+    
+@app.route("/category/<int:categoryid>", methods=["GET"])
+def category(categoryid):
+    categoryname = messages.get_category_name(categoryid)
+    catlist = messages.get_category_topics(categoryid)
+    return render_template("categorypage.html", categoryposts = catlist, categoryname = categoryname, postamount = len(catlist))

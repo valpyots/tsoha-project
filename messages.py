@@ -5,7 +5,7 @@ import users
 
 #Function returns all topics
 def get_topic_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql).fetchall()
     return res
 
@@ -107,3 +107,8 @@ def get_category_name(catid):
     sql = text("SELECT C.name FROM categories C WHERE C.id = :catid")
     res = db.session.execute(sql, {"catid":catid})
     return res.fetchone()[0]
+
+def get_category_topics(catid):
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id FROM Topics T, Categories C, Users U WHERE T.user_id = U.id AND T.categoryid = C.id AND C.id = :catid")
+    res = db.session.execute(sql, {"catid":catid})
+    return res.fetchall()

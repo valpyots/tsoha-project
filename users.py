@@ -62,13 +62,13 @@ def get_username(user_id):
 
 #Function returns all non-deleted topics posted by the user
 def get_user_topics(user_id):
-    sql = text("SELECT T.title, T.message, T.id, C.name FROM Topics T, Categories C WHERE T.user_id = :user_id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, T.id, C.name, C.id FROM Topics T, Categories C WHERE T.user_id = :user_id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchall()
 
 #Function return all topis postes by user, even deleted ones
 def admin_get_user_topics(user_id):
-    sql = text("SELECT T.title, T.message, T.id, C.name FROM Topics T, Categories C WHERE T.user_id = :user_id AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, T.id, C.name, C.id FROM Topics T, Categories C WHERE T.user_id = :user_id AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchall()
 

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}{{ categoryname }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <p>{{ message }}</p>
+            <p>{{ categoryname }} has {{ postamount }} posts.</p>
+            {% for post in categoryposts %}
+            <h2>{{ post[0] }}</h2>
+            <p> In this category</p>
+            <p>{{ post[1] }}</p>
+            <p>by {{ post[2] }}
+            <p>Topic posted on {{ post[3] }}
+            <form action="/respond/{{ post[4] }}" method="GET">
+            <input type="submit" value="Comment">
+            </form>
+            <hr>
+            {% endfor %}
+            {% if postamount == 0 %}
+            <p> Seems {{ categoryname }} doesn't yet have anything.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

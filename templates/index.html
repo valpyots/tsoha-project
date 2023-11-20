@@ -29,13 +29,14 @@
             <p>Current topic count: {{ count }}</p>
             {% for topic in topics %}
             <h3>{{ topic[0] }}</h3></br>
-            <p>In category {{ topic[6] }}</p><br>
+            <p>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></p><br>
             Sent by:<a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a><br>
             <p>{{ topic[1] }}</p></br>
             Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</br>
             <form action="/respond/{{topic[4]}}" method="GET">
             <input type="submit" value="Comment">
             </form>
+            <hr>
             {% endfor %}
         </div>
     </div>
