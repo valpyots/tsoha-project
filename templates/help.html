@@ -3,7 +3,14 @@
 {% block content %}
 <div class="container">
         <h1>Need help?</h1><br>
-        <p>Helpful answers go here.</p>
+        <h2>Categories</h2>
+        <p>Categories are meant to link similar topics together. Users can browse posts by category. When posting, the default category is set to "none"
+        simply to avoid errors. Categories are case-insensitive, as all categories are set to lower case on creation. Technically case sensitive categories
+        are implemented, but they are avoided so to not have a duplicate categories.</p>
+        <p>
+        <h2>User Pages</h2>
+        <p>User Pages function similarly to categories, except they list topics posted by one user. Admin users can see all topics for a given user, even those they have set to private.
+        For this reason, users are also allowed to see their own posts they have deleted on their profile.</p>
         <p><a href="/">Return</a></p>
 </div>
 {% endblock %}

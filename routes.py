@@ -88,6 +88,17 @@ def hidetopic(topic):
     else:
         return render_template("error.html", message="You do not have permission to delete this topic")
     
+@app.route("/hidemessage/<int:messageid>", methods=["POST"])
+def hidemessage(messageid):
+    if session["user_id"] == messages.get_message_user(messageid)[0][0]:
+        messages.hide_message(messageid)
+        return redirect("/")
+    elif users.get_admin_status(session["user_id"]) == True:
+        messages.hide_message(messageid)
+        return redirect("/")
+    else:
+        return render_template("error.html", message="You do not have permission to delete this message")
+    
 @app.route("/userpage/<int:user_id>", methods=["GET"])
 def userpage(user_id):
     profilename = users.get_username(user_id)

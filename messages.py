@@ -11,7 +11,7 @@ def get_topic_list():
 
 #Function returns all responses to a given topic by topic id
 def get_responses(topic_id):
-    sql = text("SELECT M.content, U.username, M.sent_at, M.user_id FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id AND M.visible = true ORDER BY M.id DESC")
+    sql = text("SELECT M.content, U.username, M.sent_at, M.user_id, M.id FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id AND M.visible = true ORDER BY M.id DESC")
     result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchall()
 
@@ -66,11 +66,26 @@ def hide_topic(topic_id):
         db.session.execute(sql, {"topic_id":topic_id})
         db.session.commit()
         return True
+    
+#Funtion to allow message deletion by setting db value visible to False
+def hide_message(messageid):
+    if messageid == 0:
+        return False
+    else:
+        sql = text("UPDATE messages SET visible = false WHERE messages.id = :messageid")
+        db.session.execute(sql, {"messageid":messageid})
+        db.session.commit()
+        return True
 
 #Function returns user id for user who posted the topic by topic id
 def get_topic_user(topic_id):
     sql = text("SELECT T.user_id, U.username FROM topics T, Users U WHERE T.id = :topic_id AND T.user_id = U.id")
     res = db.session.execute(sql, {"topic_id":topic_id})
+    return res.fetchall()
+
+def get_message_user(messageid):
+    sql = text("SELECT M.user_id, U.username FROM messages M, Users U WHERE M.id = :messageid AND M.user_id = U.id")
+    res = db.session.execute(sql, {"messageid":messageid})
     return res.fetchall()
 
 #Function to create category

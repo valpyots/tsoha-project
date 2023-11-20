@@ -15,25 +15,38 @@
         <form action="/hidetopic/{{ topic }}" method="POST">
         <input type="submit" value="Delete topic">
         </form>
+        <hr>
         {% elif adminstatus %}
         <p>Posted by <a href="/userpage/{{ startuser[0][0] }}">{{ startuser[0][1] }}</a></p><br>
+        <hr>
         <form action="/hidetopic/{{ topic }}" method="POST">
         <input type="submit" value="Delete topic">
         </form>
         {% else %}
         <p>Posted by <a href="/userpage/{{ startuser[0][0] }}">{{ startuser[0][1] }}</a></p><br>
+        <hr>
         {% endif %}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Respond...</p>
-            <input type="text" name="content"></p><br>
+            <textarea name="content" cols="80%"></textarea></p><br>
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Post">
             </form>
+            <hr>
             <h2>Responses</h2>
             {% for message in messages %}
             {{ message[0] }}<br>
             <p><a href="/userpage/{{message[3]}}">{{ message[1] }}</a></p></br>
             Posted on {{ message[2].strftime('%Y-%m-%d %H:%M:%S') }}</br>
+            {% if session.user_id == message[3] %}
+            <form action="/hidemessage/{{ message[4] }}" method="POST">
+                <input type="submit" value="Delete message">
+                </form>
+            {% elif adminstatus %}
+            <form action="/hidemessage/{{ message[4] }}" method="POST">
+                <input type="submit" value="Delete message">
+                </form>
+            {% endif%}
             <hr>
             {% endfor %}
         </div>
