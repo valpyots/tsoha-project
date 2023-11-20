@@ -26,21 +26,32 @@ The application currently allows an user to:
 
 - respond to existing topics
 
+- choose a category for their post
+
 - view their own posts on their profile
 
 - allow others to view other user's profiles and their posts , if set to public
 
-- browse all posts
+- browse all posts, browse post by category
+
+The application also supports admin users, who can:
+
+- delete any post or message
+
+- view all profiles, even those set to private
 
 Features that I still plan to implement:
 
-- admin user accounts, which  will also be able to:
-
-	- delete any post or message
+- for admin accounts:
 
 	- block an user from posting
 
-	- view all profiles, even those set to private
-
 - sorting posts by date or comment amount, both ascending and descending
-- post categories, sorting posts by category
+
+- profile bios to describe user
+
+- editing own user data (ie. change password, bio, profile visibility)
+
+- better user interface
+
+- in-app admin creation (currently admin users can only be created from the database)
