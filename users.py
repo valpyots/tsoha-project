@@ -23,8 +23,8 @@ def signup(username, password, password2, visibility):
 
 def login(username, password):
     sql = text("SELECT id, password FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()
+    res = db.session.execute(sql, {"username":username})
+    user = res.fetchone()
     if not user:
         return False
     else:
@@ -51,21 +51,29 @@ def username():
 
 def get_username(user_id):
     sql = text("SELECT U.username FROM Users U WHERE U.id = :user_id")
-    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
-    return res
+    res = db.session.execute(sql, {"user_id":user_id})
+    return res.fetchone()
 
 def get_user_topics(user_id):
     sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id AND T.visible = true")
-    res = db.session.execute(sql, {"user_id":user_id}).fetchall()
-    return res
+    res = db.session.execute(sql, {"user_id":user_id})
+    return res.fetchall()
 
 def admin_get_user_topics(user_id):
     sql = text("SELECT T.title, T.message, T.id FROM Topics T WHERE T.user_id = :user_id")
-    res = db.session.execute(sql, {"user_id":user_id}).fetchall()
-    return res
+    res = db.session.execute(sql, {"user_id":user_id})
+    return res.fetchall()
 
 def get_profile_visibility(user_id):
     sql = text("SELECT U.profileVisible FROM Users U WHERE U.id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    try:
+        return bool(res[0])
+    except:
+        return False
+    
+def get_admin_status(user_id):
+    sql = text("SELECT U.isAdmin FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
     try:
         return bool(res[0])

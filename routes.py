@@ -48,7 +48,7 @@ def newtopic():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", message="Forbidden")
     if messages.newtopic(title, message):
-        return redirect("/")
+        return render_template("index.html", message="New topic posted succesfully", username = users.username())
     else:
         return render_template("error.html", message="Failed to post new topic")
 
@@ -58,8 +58,9 @@ def respond(topic):
     title = messages.get_topic_title(topic)
     startmessage = messages.get_topic_message(topic)
     startuser = messages.get_topic_user(topic)
+    adminstatus = users.get_admin_status(session["user_id"])
     if request.method == "GET":
-        return render_template("respond.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username())
+        return render_template("respond.html", topic=topic, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
@@ -77,6 +78,9 @@ def help():
 @app.route("/hidetopic/<int:topic>", methods=["POST"])
 def hidetopic(topic):
     if session["user_id"] == messages.get_topic_user(topic)[0][0]:
+        messages.hide_topic(topic)
+        return redirect("/")
+    elif users.get_admin_status(session["user_id"]) == True:
         messages.hide_topic(topic)
         return redirect("/")
     else:
