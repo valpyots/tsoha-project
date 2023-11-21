@@ -21,7 +21,7 @@
             </form>
             {% endif %}
             {% endif %}
-            {% if visibility == True %}
+            {% if visibility == True or adminstatus == True %}
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
             <hr>
             {% for post in profileposts %}
