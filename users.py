@@ -89,3 +89,26 @@ def get_admin_status(user_id):
         return bool(res[0])
     except:
         return False
+    
+#Funtion to check if an user has been banned.
+def get_can_post(user_id):
+    sql = text("SELECT U.canpost FROM Users U WHERE U.id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    try:
+        return bool(res[0])
+    except:
+        return False
+    
+#Function for admins to ban users from posting
+def admin_ban_user(user_id):
+    sql = text("UPDATE users SET canpost = false WHERE users.id = :user_id")
+    db.session.execute(sql, {"user_id": user_id})
+    db.session.commit()
+    return True
+
+#Function for admins to unban users from posting
+def admin_unban_user(user_id):
+    sql = text("UPDATE users SET canpost = true WHERE users.id = :user_id")
+    db.session.execute(sql, {"user_id": user_id})
+    db.session.commit()
+    return True

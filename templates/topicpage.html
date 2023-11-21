@@ -35,9 +35,9 @@
             <hr>
             <h2>Responses</h2>
             {% for message in messages %}
-            {{ message[0] }}<br>
+            <p>{{ message[0] }}</p><br>
             <p><a href="/userpage/{{message[3]}}">{{ message[1] }}</a></p></br>
-            Posted on {{ message[2].strftime('%Y-%m-%d %H:%M:%S') }}</br>
+            <p>Posted on {{ message[2].strftime('%Y-%m-%d %H:%M:%S') }}</p></br>
             {% if session.user_id == message[3] %}
             <form action="/hidemessage/{{ message[4] }}" method="POST">
                 <input type="submit" value="Delete message">

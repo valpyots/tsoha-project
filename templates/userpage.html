@@ -5,6 +5,22 @@
     <div class="row">
         <div class="col-sm">
             <p>{{ message }}</p>
+            {% if useradminstatus %}
+            <p>This user is an admin.</p>
+            {% endif %}
+            {% if adminstatus %}
+            {% if canpost %}
+            This user is currently allowed to post.
+            <form action="/banuser/{{ user_id }}">
+                <input type="submit" value="Block this user from posting">
+            </form>
+            {% else %}
+            This user is currently blocked from posting.
+            <form action="/unbanuser/{{ user_id }}">
+                <input type="submit" value="Allow this user to post">
+            </form>
+            {% endif %}
+            {% endif %}
             {% if visibility == True %}
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
             {% for post in profileposts %}

@@ -47,6 +47,8 @@ def newtopic():
     message = request.form["message"]
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", message="Forbidden")
+    if users.get_can_post(session["user_id"]) == False:
+        return render_template("error.html", message="An admin user has blocked you from posting.")
     if messages.newtopic(title, message, category):
         return redirect("/")
     else:
@@ -66,6 +68,8 @@ def respond(topic):
     if request.method == "POST":
         if session["csrf_token"] != request.form["csrf_token"]:
             return render_template("error.html", message="Forbidden")
+        elif users.get_can_post(session["user_id"]) == False:
+            return render_template("error.html", message="An admin user has blocked you from posting.")
         else:
             content = request.form["content"]
             if messages.respond(content, topic):
@@ -105,11 +109,30 @@ def userpage(user_id):
     list = users.get_user_topics(user_id)
     adminlist = users.admin_get_user_topics(user_id)
     visibility = users.get_profile_visibility(user_id)
+    adminstatus = users.get_admin_status(session["user_id"])
+    useradminstatus = users.get_admin_status(user_id)
+    canpost = users.get_can_post(user_id)
     if session["user_id"] == user_id:
-        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True)
+        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
     else:
-        return render_template("userpage.html", message="This is another user's profile.", profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility)
-    
+        return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+
+@app.route("/banuser/<int:user_id>", methods=["GET"])
+def banuser(user_id):
+    if users.get_admin_status(session["user_id"]):
+        users.admin_ban_user(user_id)
+        return redirect("/")
+    else:
+        render_template("error.html", message="You do not have permission to block this user from posting.")
+
+@app.route("/unbanuser/<int:user_id>", methods=["GET"])
+def unbanuser(user_id):
+    if users.get_admin_status(session["user_id"]):
+        users.admin_unban_user(user_id)
+        return redirect("/")
+    else:
+        render_template("error.html", message="You do not have permission to allow this user to post.")
+
 @app.route("/category/<int:categoryid>", methods=["GET"])
 def category(categoryid):
     categoryname = messages.get_category_name(categoryid)
