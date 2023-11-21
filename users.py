@@ -98,7 +98,7 @@ def get_can_post(user_id):
         return bool(res[0])
     except:
         return False
-    
+
 #Function for admins to ban users from posting
 def admin_ban_user(user_id):
     sql = text("UPDATE users SET canpost = false WHERE users.id = :user_id")

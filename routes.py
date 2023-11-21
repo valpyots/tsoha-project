@@ -56,26 +56,29 @@ def newtopic():
 
 @app.route("/respond/<int:topic>", methods=["GET", "POST"])
 def respond(topic):
-    list = messages.get_responses(topic)
-    title = messages.get_topic_title(topic)
-    startmessage = messages.get_topic_message(topic)
-    startuser = messages.get_topic_user(topic)
-    categoryid = messages.get_topic_category(topic)
-    category = messages.get_category_name(categoryid)
-    adminstatus = users.get_admin_status(session["user_id"])
-    if request.method == "GET":
-        return render_template("topicpage.html", topic=topic, category=category, categoryid = categoryid, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
-    if request.method == "POST":
-        if session["csrf_token"] != request.form["csrf_token"]:
-            return render_template("error.html", message="Forbidden")
-        elif users.get_can_post(session["user_id"]) == False:
-            return render_template("error.html", message="An admin user has blocked you from posting.")
-        else:
-            content = request.form["content"]
-            if messages.respond(content, topic):
-                return redirect("/respond/" + str(topic))
+    if session.get("user_id", 0):
+        list = messages.get_responses(topic)
+        title = messages.get_topic_title(topic)
+        startmessage = messages.get_topic_message(topic)
+        startuser = messages.get_topic_user(topic)
+        categoryid = messages.get_topic_category(topic)
+        category = messages.get_category_name(categoryid)
+        adminstatus = users.get_admin_status(session["user_id"])
+        if request.method == "GET":
+            return render_template("topicpage.html", topic=topic, category=category, categoryid = categoryid, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
+        if request.method == "POST":
+            if session["csrf_token"] != request.form["csrf_token"]:
+                return render_template("error.html", message="Forbidden")
+            elif users.get_can_post(session["user_id"]) == False:
+                return render_template("error.html", message="An admin user has blocked you from posting.")
             else:
-                return render_template("error.html", message="Failed to post response")
+                content = request.form["content"]
+                if messages.respond(content, topic):
+                    return redirect("/respond/" + str(topic))
+                else:
+                    return render_template("error.html", message="Failed to post response")
+    else:
+        return render_template("loginprompt.html", title=messages.get_topic_title(topic)[0], function="respond")
 
 @app.route("/help", methods=["GET"])
 def help():
@@ -105,18 +108,21 @@ def hidemessage(messageid):
     
 @app.route("/userpage/<int:user_id>", methods=["GET"])
 def userpage(user_id):
-    profilename = users.get_username(user_id)
-    list = users.get_user_topics(user_id)
-    adminlist = users.admin_get_user_topics(user_id)
-    visibility = users.get_profile_visibility(user_id)
-    adminstatus = users.get_admin_status(session["user_id"])
-    useradminstatus = users.get_admin_status(user_id)
-    canpost = users.get_can_post(user_id)
-    if session["user_id"] == user_id:
-        return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+    if session.get("user_id", 0):
+        profilename = users.get_username(user_id)
+        list = users.get_user_topics(user_id)
+        adminlist = users.admin_get_user_topics(user_id)
+        visibility = users.get_profile_visibility(user_id)
+        adminstatus = users.get_admin_status(session["user_id"])
+        useradminstatus = users.get_admin_status(user_id)
+        canpost = users.get_can_post(user_id)
+        if session["user_id"] == user_id:
+            return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+        else:
+            return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
     else:
-        return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
-
+        return render_template("loginprompt.html", function="view userpages", title = str(users.get_username(user_id)) + "'s userpage")
+    
 @app.route("/banuser/<int:user_id>", methods=["GET"])
 def banuser(user_id):
     if users.get_admin_status(session["user_id"]):
@@ -136,5 +142,8 @@ def unbanuser(user_id):
 @app.route("/category/<int:categoryid>", methods=["GET"])
 def category(categoryid):
     categoryname = messages.get_category_name(categoryid)
-    catlist = messages.get_category_topics(categoryid)
-    return render_template("categorypage.html", categoryposts = catlist, categoryname = categoryname, postamount = len(catlist))
+    if session.get("user_id", 0):
+        catlist = messages.get_category_topics(categoryid)
+        return render_template("categorypage.html", categoryposts = catlist, categoryname = categoryname, postamount = len(catlist))
+    else:
+        return render_template("/loginprompt.html", function="view categories", title = categoryname)

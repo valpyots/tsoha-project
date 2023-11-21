@@ -23,6 +23,7 @@
             {% endif %}
             {% if visibility == True %}
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
+            <hr>
             {% for post in profileposts %}
             <h2>{{ post[0] }}</h2>
             <p> In category <a href="/category/{{ post[4] }}">{{ post[3] }}</a></p>

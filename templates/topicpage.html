@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
-{% block title %}Respond to {{ title[0] }}{% endblock %}
+{% block title %}{{ title[0] }}{% endblock %}
 {% block content %}
 <div class="container overflow-hidden">
     <div class="row">
         <div class="col-sm">
-        <p>{% if session.user_id %}
-            <!--- If user is logged in, show their username and allow them to respond to topic-->
             <p>You are logged in as {{ username[0] }}</p>
         <h3>{{ title[0] }}</h3><br>
         <p>In category <a href="/category/{{ categoryid }}">{{ category }}</a></p>
@@ -28,7 +26,7 @@
         {% endif %}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Respond...</p>
-            <textarea name="content" cols="80%"></textarea></p><br>
+            <textarea name="content" cols="100%"></textarea></p><br>
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Post">
             </form>
@@ -50,19 +48,6 @@
             <hr>
             {% endfor %}
         </div>
-            {% else %}
-            {{ message }}
-            <h2>You need to log in to respond:</h2>
-            <form action="/login" method="POST">
-            <p>Username:<br>
-            <input type="text" name="username"></p>
-            <p>Password:<br>
-            <input type="password" name="password"></p>
-            <input type="submit" value="Log in">
-            </form>
-            <h2>If you don't have an account, you can register here:</h2>
-            <p><a href="/register">To registration</h></p>
-
             {% endif %}
             </p>
         </div>
