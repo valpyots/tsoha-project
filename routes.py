@@ -113,17 +113,21 @@ def userpage(user_id):
         list = users.get_user_topics(user_id)
         adminlist = users.admin_get_user_topics(user_id)
         visibility = users.get_profile_visibility(user_id)
+        if visibility:
+            vistext = " Your userpage is public."
+        else:
+            vistext = " Your userpage is private."
         adminstatus = users.get_admin_status(session["user_id"])
         useradminstatus = users.get_admin_status(user_id)
         canpost = users.get_can_post(user_id)
         if session["user_id"] == user_id:
-            return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously.", user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+            return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously." + vistext, user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
         else:
             return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
     else:
         return render_template("loginprompt.html", function="view userpages", title = str(users.get_username(user_id)) + "'s userpage")
     
-@app.route("/banuser/<int:user_id>", methods=["GET"])
+@app.route("/banuser/<int:user_id>", methods=["POST"])
 def banuser(user_id):
     if users.get_admin_status(session["user_id"]):
         users.admin_ban_user(user_id)
@@ -131,7 +135,7 @@ def banuser(user_id):
     else:
         render_template("error.html", message="You do not have permission to block this user from posting.")
 
-@app.route("/unbanuser/<int:user_id>", methods=["GET"])
+@app.route("/unbanuser/<int:user_id>", methods=["POST"])
 def unbanuser(user_id):
     if users.get_admin_status(session["user_id"]):
         users.admin_unban_user(user_id)

@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 from sqlalchemy.sql import text
 import secrets
+from datetime import datetime
 
 #Function for registration functionality
 def register(username, password, password2, visibility):
@@ -15,8 +16,8 @@ def register(username, password, password2, visibility):
             return False
         hash_value = generate_password_hash(password)
         try:
-            sql = text("INSERT INTO users (username, password, profileVisible, canPost, isAdmin) VALUES (:username, :password, :profileVisible, true, false)")
-            db.session.execute(sql, {"username":username, "password":hash_value, "profileVisible":visibility})
+            sql = text("INSERT INTO users (username, password, privacy) VALUES (:username, :password, :visibility)")
+            db.session.execute(sql, {"username":username, "password":hash_value, "visibility":visibility})
             db.session.commit()
         except:
             return False
@@ -62,7 +63,7 @@ def get_username(user_id):
 
 #Function returns all non-deleted topics posted by the user
 def get_user_topics(user_id):
-    sql = text("SELECT T.title, T.message, T.id, C.name, C.id FROM Topics T, Categories C WHERE T.user_id = :user_id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT DISTINCT T.title, T.message, T.id, C.name, C.id FROM Topics T, Categories C, deletedtopics D WHERE T.user_id = :user_id AND T.id NOT IN (SELECT topicid FROM deletedtopics WHERE topicid IS NOT NULL) AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql, {"user_id":user_id})
     return res.fetchall()
 
@@ -74,41 +75,46 @@ def admin_get_user_topics(user_id):
 
 #Function returns boolean value for whether or not a given user's profile is private
 def get_profile_visibility(user_id):
-    sql = text("SELECT U.profileVisible FROM Users U WHERE U.id = :user_id")
+    sql = text("SELECT U.privacy FROM Users U WHERE U.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
-    try:
-        return bool(res[0])
-    except:
+    if res[0] == 0:
+        return True
+    elif res[0] == 1:
         return False
+    else:
+        return "breaks"
 
 #Function returns boolean value for whether or not a given user is an admin user
 def get_admin_status(user_id):
-    sql = text("SELECT U.isAdmin FROM Users U WHERE U.id = :user_id")
+    sql = text("SELECT A.user_id FROM Admins A WHERE :user_id IN (SELECT user_id from admins)")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
-    try:
-        return bool(res[0])
-    except:
+    if res == None:
         return False
+    else:
+        return True
     
-#Funtion to check if an user has been banned.
+#Function to check if an user is allowed to post.
 def get_can_post(user_id):
-    sql = text("SELECT U.canpost FROM Users U WHERE U.id = :user_id")
+    sql = text("SELECT B.banactive FROM bans B WHERE B.user_id = :user_id ORDER BY B.id DESC")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
     try:
-        return bool(res[0])
+        if bool(res[0]) == False:
+            return True
+        elif bool(res[0]) == True:
+            return False
     except:
-        return False
+        return True
 
 #Function for admins to ban users from posting
 def admin_ban_user(user_id):
-    sql = text("UPDATE users SET canpost = false WHERE users.id = :user_id")
-    db.session.execute(sql, {"user_id": user_id})
+    sql = text("INSERT INTO bans (user_id, bandate, banend, banactive) VALUES (:user_id, NOW(), :banend, true)")
+    db.session.execute(sql, {"user_id": user_id, "banend":datetime(2999,1,1,0,0,0)})
     db.session.commit()
     return True
 
 #Function for admins to unban users from posting
 def admin_unban_user(user_id):
-    sql = text("UPDATE users SET canpost = true WHERE users.id = :user_id")
+    sql = text("UPDATE bans SET banactive = false WHERE user_id = :user_id")
     db.session.execute(sql, {"user_id": user_id})
     db.session.commit()
     return True

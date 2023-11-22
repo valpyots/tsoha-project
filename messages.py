@@ -5,13 +5,13 @@ import users
 
 #Function returns all topics
 def get_topic_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.visible = true AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.id NOT IN (SELECT topicid FROM deletedtopics) AND T.categoryid = C.id ORDER BY T.id DESC")
     res = db.session.execute(sql).fetchall()
     return res
 
 #Function returns all responses to a given topic by topic id
 def get_responses(topic_id):
-    sql = text("SELECT M.content, U.username, M.sent_at, M.user_id, M.id FROM messages M, users U, Topics T WHERE M.user_id=U.id AND T.id = M.topic_id AND T.id = :topic_id AND M.visible = true ORDER BY M.id DESC")
+    sql = text("SELECT M.content, U.username, M.sent_at, M.user_id, M.id FROM messages M, Users U, Topicmessages A WHERE M.user_id=U.id AND M.id = A.messageid AND A.topicid = :topic_id AND M.id NOT IN (SELECT messageid FROM deletedmessages) ORDER BY M.id DESC")
     result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchall()
 
@@ -24,7 +24,7 @@ def newtopic(title, message, categoryname):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = text("INSERT INTO topics (title, message, user_id, sent_at, visible, categoryid) VALUES (:title, :message, :user_id, NOW(), true, :categoryid)")
+    sql = text("INSERT INTO topics (title, message, user_id, sent_at, categoryid) VALUES (:title, :message, :user_id, NOW(), :categoryid)")
     db.session.execute(sql, {"title": title, "message": message, "user_id": user_id, "categoryid": categoryid})
     db.session.commit()
     return True
@@ -34,8 +34,13 @@ def respond(content, topic_id):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = text("INSERT INTO messages (content, user_id, sent_at, topic_id, visible) VALUES (:content, :user_id, NOW(), :topic_id, true)")
+    sql = text("INSERT INTO messages (content, user_id, sent_at) VALUES (:content, :user_id, NOW())")
     db.session.execute(sql, {"content":content, "user_id":user_id, "topic_id":topic_id})
+    db.session.commit()
+    sql = text("SELECT M.id FROM Messages M WHERE M.content = :content")
+    mid = db.session.execute(sql, {"content":content}).fetchone()[0]
+    sql = text("INSERT INTO topicmessages (topicid, messageid) VALUES (:topic_id, :messageid)")
+    db.session.execute(sql,  {"topic_id":topic_id, "messageid":mid})
     db.session.commit()
     return True
 
@@ -57,12 +62,12 @@ def get_topic_message(topic_id):
     res = db.session.execute(sql, {"topic_id":topic_id})
     return res.fetchone()
 
-#Function to allow topic deletion by changing database value "visibile" to false
+#Function to allow topic deletion by inserting topic id into deletedtopics table
 def hide_topic(topic_id):
     if topic_id == 0:
         return False
     else:
-        sql = text("UPDATE topics SET visible = false WHERE topics.id = :topic_id")
+        sql = text("INSERT INTO deletedtopics (topicid) VALUES (:topic_id)")
         db.session.execute(sql, {"topic_id":topic_id})
         db.session.commit()
         return True
@@ -72,7 +77,7 @@ def hide_message(messageid):
     if messageid == 0:
         return False
     else:
-        sql = text("UPDATE messages SET visible = false WHERE messages.id = :messageid")
+        sql = text("INSERT INTO deletedmessages (messageid) VALUES (:messageid)")
         db.session.execute(sql, {"messageid":messageid})
         db.session.commit()
         return True
@@ -124,6 +129,6 @@ def get_category_name(catid):
     return res.fetchone()[0]
 
 def get_category_topics(catid):
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id FROM Topics T, Categories C, Users U WHERE T.user_id = U.id AND T.categoryid = C.id AND C.id = :catid AND T.visible = true")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id FROM Topics T, Categories C, Users U WHERE T.user_id = U.id AND T.categoryid = C.id AND C.id = :catid AND T.id NOT IN (SELECT topicid FROM deletedtopics) ORDER BY T.id DESC")
     res = db.session.execute(sql, {"catid":catid})
     return res.fetchall()

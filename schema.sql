@@ -1,5 +1,15 @@
+CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, privacy INTEGER);
 CREATE TABLE categories (ID SERIAL PRIMARY KEY, name TEXT);
-CREATE TABLE messages (ID SERIAL PRIMARY KEY, content TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, topic_id REFERENCES topics visible BOOLEAN);
-CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, profilevisible BOOLEAN, canpost BOOLEAN, isAdmin BOOLEAN);
-CREATE TABLE topics (ID SERIAL PRIMARY KEY message TEXT, title TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, visible BOOLEAN, categoryid INTEGER  REFERENCES categories);
-
+CREATE TABLE messages (ID SERIAL PRIMARY KEY, content TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP);
+CREATE TABLE topics (ID SERIAL PRIMARY KEY, message TEXT, title TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, categoryid INTEGER REFERENCES categories);
+CREATE TABLE topicmessages (ID SERIAL PRIMARY KEY, topicid INTEGER REFERENCES topics, messageid INTEGER REFERENCES messages);
+CREATE TABLE deletedtopics (ID SERIAL PRIMARY KEY, topicid INTEGER REFERENCES topics);
+CREATE TABLE deletedmessages (ID SERIAL PRIMARY KEY, messageid INTEGER REFERENCES messages);
+CREATE TABLE topicedits (ID SERIAL PRIMARY KEY, topicid INTEGER REFERENCES topics, original TEXT, new TEXT);
+CREATE TABLE messageedits (ID SERIAL PRIMARY KEY, messageid INTEGER REFERENCES messages, original TEXT, new TEXT);
+CREATE TABLE bans (ID SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users, bandate TIMESTAMP, banend DATE, banactive BOOLEAN);
+CREATE TABLE admins (ID SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users);
+INSERT INTO users (username, password, privacy) VALUES ('zero', 'zero', 1);
+INSERT INTO bans (user_id, bandate, banend, banactive) VALUES (1, '1999-01-01 00:00:00+0', '2999-01-01', true);
+INSERT INTO users (username, password, privacy) VALUES ('admin', 'scrypt:32768:8:1$dUpsYocFLfm1Io9D$6d1771c1e57ffc07e98aa1090946209598efae85f8cda7bac388b1fd05fd348dee895fe19ceeb9e1273ad64cf07a1ba903f214a0e11b87ee3474373abceab50f', 1);
+INSERT INTO admins (user_id) VALUES (2);
