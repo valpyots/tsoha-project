@@ -20,6 +20,10 @@ Note that this application is currently not deployed anywhere. To test it:
 	
 	$ flask run
 
+The database schema currently creates an admin account for testing. Both username and password are "admin".
+This is obviously not very safe for any actual purpose, and in the future I'd like to implement actual admin
+creation and password changing.
+
 The application currently allows an user to:
 
 - post a new topic
@@ -40,11 +44,9 @@ The application also supports admin users, who can:
 
 - view all profiles, even those set to private
 
+- block user's from posting
+
 Features that I still plan to implement:
-
-- for admin accounts:
-
-	- block an user from posting
 
 - sorting posts by date or comment amount, both ascending and descending
 
