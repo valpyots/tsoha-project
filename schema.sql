@@ -1,4 +1,4 @@
-CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, privacy INTEGER);
+CREATE TABLE users (ID SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, privacy INTEGER, bio TEXT);
 CREATE TABLE categories (ID SERIAL PRIMARY KEY, name TEXT);
 CREATE TABLE messages (ID SERIAL PRIMARY KEY, content TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP);
 CREATE TABLE topics (ID SERIAL PRIMARY KEY, message TEXT, title TEXT, user_id INTEGER REFERENCES users, sent_at TIMESTAMP, categoryid INTEGER REFERENCES categories);
