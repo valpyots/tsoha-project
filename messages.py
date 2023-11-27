@@ -37,8 +37,8 @@ def respond(content, topic_id):
     sql = text("INSERT INTO messages (content, user_id, sent_at) VALUES (:content, :user_id, NOW())")
     db.session.execute(sql, {"content":content, "user_id":user_id, "topic_id":topic_id})
     db.session.commit()
-    sql = text("SELECT M.id FROM Messages M WHERE M.content = :content")
-    mid = db.session.execute(sql, {"content":content}).fetchone()[0]
+    sql = text("SELECT M.id FROM Messages M WHERE M.content = :content AND M.user_id = :user_id ORDER BY M.id DESC")
+    mid = db.session.execute(sql, {"content":content, "user_id":user_id}).fetchone()[0]
     sql = text("INSERT INTO topicmessages (topicid, messageid) VALUES (:topic_id, :messageid)")
     db.session.execute(sql,  {"topic_id":topic_id, "messageid":mid})
     db.session.commit()
