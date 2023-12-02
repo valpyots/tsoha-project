@@ -186,6 +186,18 @@ def changepassword():
             if users.changepassword(user_id, oldpassword, newpassword):
                 return render_template("editpage.html", message="Password changed")
             else:
-                return render_template("editpage.html", message="Password change failed. Your password was not changed.")
+                return render_template("editpage.html", message="Password change failed, your password was not changed")
     else:
         return render_template("loginprompt.html", function="change your password", title="Log in to change password")
+    
+@app.route("/profilevisibility", methods=["POST"])
+def profilevisibility():
+    if session.get("user_id", 0):
+        user_id = session["user_id"]
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", message = "Forbidden")
+        visibility = request.form["visibility"]
+        users.set_profile_visibility(user_id, visibility)
+        return render_template("editpage.html", message="Profile visibility updated")
+    else:
+        return render_template("loginprompt.html", function="change your profile visibility", title="Log in to set profile visibility")

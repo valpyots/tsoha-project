@@ -103,6 +103,12 @@ def get_profile_visibility(user_id):
         return False
     else:
         return "breaks"
+    
+def set_profile_visibility(user_id, privvalue):
+    sql = text("UPDATE users SET privacy = :privvalue WHERE id = :user_id")
+    db.session.execute(sql, {"user_id":user_id, "privvalue":privvalue})
+    db.session.commit()
+    return True
 
 #Function returns boolean value for whether or not a given user is an admin user
 def get_admin_status(user_id):

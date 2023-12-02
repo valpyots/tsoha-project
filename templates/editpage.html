@@ -3,7 +3,21 @@
 {% block content %}
 <div class="container">
 <h2>Edit profile</h2>
+<p> Here you can change your profile visibility, profile bio or the password you use to log in to the site.</p>
 <p>{{ message }}</p>
+<h3>Change profile visibility</h3>
+<form action="/profilevisibility" method="POST">
+    <div class="form-group">
+    <label for="visibility">Others can see your profile:</label><br>
+    <input class="formcontrol" name="visibility" value="0" type="radio"> Yes<br>
+    <input class="formcontrol" name="visibility" value="1" type="radio"> No<br>
+    </div>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <div class="form-group">
+    <input class="formcontrol" type="submit" value="Change profile visibility">
+    </div>
+</form>
+<hr>
 <h3>Change your profile text</h3>
 <form action="/edit" method="POST">
     <div class="form-group">
