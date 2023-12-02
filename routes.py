@@ -40,6 +40,23 @@ def logout():
     users.logout()
     return redirect("/")
 
+@app.route("/makeadmin/<int:user_id>", methods=["POST"])
+def makeadmin(user_id):
+    if session.get("user_id", 0):
+        password = request.form["password"]
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", message="Forbidden")
+        if users.get_admin_status(session["user_id"]):
+            if users.check_password(password):
+                if users.admin_creation(user_id):
+                    return redirect("/")
+                else:
+                    return render_template("error.html", message="Error in giving admin rights")
+            else:
+                return render_template("error.html", message="Wrong password")    
+        else:
+            return render_template("error.html", message="You do not have permission to give out admin rights")
+
 @app.route("/newtopic", methods=["POST"])
 def newtopic():
     category = request.form["category"].lower()
@@ -124,7 +141,7 @@ def userpage(user_id):
         if session["user_id"] == user_id:
             return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously." + vistext, user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
         else:
-            return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
+            return render_template("userpage.html", message="This is a user's personal profile page.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
     else:
         return render_template("loginprompt.html", function="view userpages", title = str(users.get_username(user_id)) + "'s userpage")
     

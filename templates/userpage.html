@@ -7,21 +7,38 @@
             <h1>{{ profilename[0] }}'s profile</h1>
             <p>{{ message }}</p>
             {% if useradminstatus %}
-            <p>This user is an admin.</p>
+            <p class="text-danger">This user is an admin.</p>
             {% endif %}
             {% if adminstatus %}
+            <hr>
+            <h2>Admin tools</h2><br>
+            <p>You see this because your account is set as an admin account.</p>
+            <h4>Admin creation</h4>
+            <p>Make this user an admin? Careful, this can not be undone!</p>
+            <form class="formcontrol" action="/makeadmin/{{ user_id }} " method="POST"><br>
+                <div class="form-group">
+                <label for="password">Confirm with your password</label><br>
+                <input type="password" name="password"><br>
+                </div>
+                <div class="form-group">
+                <input type="submit" value="Permanently give admin priviledges to this user."><br>
+                </div>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form><br>
             {% if canpost %}
-            This user is currently allowed to post.
+            <h4>User status</h4>
+            <p>This user is currently allowed to post.</p>
             <form action="/banuser/{{ user_id }}" method="POST">
                 <input type="submit" value="Block this user from posting">
-            </form>
+            </form><br>
             {% else %}
-            This user is currently blocked from posting.
+            <p>This user is currently blocked from posting.</p>
             <form action="/unbanuser/{{ user_id }}" method="POST">
                 <input type="submit" value="Allow this user to post">
-            </form>
+            </form><br>
             {% endif %}
             {% endif %}
+            <hr>
             {% if visibility == True or adminstatus == True %}
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
             <hr>
@@ -30,6 +47,9 @@
             <a href="/edit">Edit your profile</a>
             {% endif %}
             <hr>
+            {% if postamount != 0 %}
+            <p>User posts:<p>
+            {% endif %}
             {% for post in profileposts %}
             <h2>{{ post[0] }}</h2>
             <p> In category <a href="/category/{{ post[4] }}">{{ post[3] }}</a></p>

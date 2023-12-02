@@ -145,6 +145,12 @@ def admin_unban_user(user_id):
     db.session.commit()
     return True
 
+def admin_creation(user_id):
+    sql = text("INSERT INTO admins (user_id) VALUES (:user_id)")
+    db.session.execute(sql, {"user_id":user_id})
+    db.session.commit()
+    return True
+
 def get_bio_text(user_id):
     sql = text("SELECT bio FROM users WHERE users.id = :user_id")
     res = db.session.execute(sql, {"user_id":user_id}).fetchone()
