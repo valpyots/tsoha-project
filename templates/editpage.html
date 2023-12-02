@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Edit profile{% endblock %}
+{% block content %}
+<div class="container">
+<h2>Edit profile</h2>
+<p>{{ message }}</p>
+<h3>Change your profile text</h3>
+<form action="/edit" method="POST">
+    <div class="form-group">
+    <textarea class="formcontrol" name="newbio">Write your new profile bio here</textarea><br>
+    </div>
+    <div class="form-group">
+    <label for="password">Confirm with password</label><br>
+    <input class="formcontrol" type="password" name="password"><br>
+    </div>
+    <div class="form-group">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input class="formcontrol" type="submit" value="Change profile text"><br>
+    </div>
+</form>
+<hr>
+<h3>Change password</h3>
+<form action="/changepassword" method="POST">
+    <div class="form-group">
+    <label for="newpassword">New password: (Has to be 8 or more characters)</label><br>
+    <input type="password" name="newpassword" minlength="8"><br>
+    </div>
+    <div class="form-group">
+    <label for="newpassword2">Repeat new password:</label><br>
+    <input type="password" name="newpassword2" minlength="8"><br>
+    </div>
+    <div class="form-group">
+    <label for="oldpassword">Confirm with old password:</label><br>
+    <input type="password" name="oldpassword">
+    </div>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <div class="form-group">
+    <input type="submit" value="Change password">
+    </div>
+</form>
+</div>
+{% endblock %}

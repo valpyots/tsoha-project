@@ -9,19 +9,17 @@ from datetime import datetime
 
 #Function for registration functionality
 def register(username, password, password2, visibility):
-    if request.method == "GET":
-        return render_template("register.html")
-    elif request.method == "POST":
-        if password != password2:
-            return False
-        hash_value = generate_password_hash(password)
-        try:
-            sql = text("INSERT INTO users (username, password, privacy) VALUES (:username, :password, :visibility)")
-            db.session.execute(sql, {"username":username, "password":hash_value, "visibility":visibility})
-            db.session.commit()
-        except:
-            return False
-        return True
+    biotext = "User hasn't yet written a bio."
+    if password != password2:
+        return False
+    hash_value = generate_password_hash(password)
+    try:
+        sql = text("INSERT INTO users (username, password, privacy, bio) VALUES (:username, :password, :visibility, :biotext)")
+        db.session.execute(sql, {"username":username, "password":hash_value, "visibility":visibility, "biotext":biotext})
+        db.session.commit()
+    except:
+        return False
+    return True
 
 #Function allows registered users to log in, creating an user session. CSRF session is also created for security.
 def login(username, password):
@@ -43,6 +41,28 @@ def logout():
     del session["user_id"]
     del session["csrf_token"]
     return redirect("/")
+
+def check_password(user_id, password):
+    sql = text("SELECT id, password FROM users WHERE id=:user_id")
+    res = db.session.execute(sql, {"user_id":user_id})
+    user = res.fetchone()
+    if not user:
+        return False
+    else:
+        if check_password_hash(user.password, password):
+            return True
+        else:
+            return False
+
+def changepassword(user_id, oldpassword, newpassword):
+    newhash = generate_password_hash(newpassword)
+    if check_password(user_id, oldpassword):
+        sql = text("UPDATE users SET password = :newhash WHERE id = :user_id")
+        db.session.execute(sql, {"newhash":newhash, "user_id":user_id})
+        db.session.commit()
+        return True
+    else:
+        return False
 
 #Function returns current user session user's id
 def user_id():
@@ -118,3 +138,17 @@ def admin_unban_user(user_id):
     db.session.execute(sql, {"user_id": user_id})
     db.session.commit()
     return True
+
+def get_bio_text(user_id):
+    sql = text("SELECT bio FROM users WHERE users.id = :user_id")
+    res = db.session.execute(sql, {"user_id":user_id}).fetchone()
+    return res[0]
+
+def updatebio(user_id, newbio, password):
+    if check_password(user_id, password):
+        sql = text("UPDATE users SET bio = :newbio WHERE id = :user_id")
+        db.session.execute(sql, {"user_id":user_id, "newbio":newbio})
+        db.session.commit()
+        return True
+    else:
+        return False

@@ -120,10 +120,11 @@ def userpage(user_id):
         adminstatus = users.get_admin_status(session["user_id"])
         useradminstatus = users.get_admin_status(user_id)
         canpost = users.get_can_post(user_id)
+        biotext = users.get_bio_text(user_id)
         if session["user_id"] == user_id:
-            return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously." + vistext, user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+            return render_template("userpage.html", message="This is your own profile. Only you can see posts you've deleted previously." + vistext, user_id = user_id, profilename = users.get_username(user_id), profileposts = adminlist, postamount = len(adminlist), visibility = True, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
         else:
-            return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost)
+            return render_template("userpage.html", message="This is another user's profile.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
     else:
         return render_template("loginprompt.html", function="view userpages", title = str(users.get_username(user_id)) + "'s userpage")
     
@@ -151,3 +152,40 @@ def category(categoryid):
         return render_template("categorypage.html", categoryposts = catlist, categoryname = categoryname, postamount = len(catlist))
     else:
         return render_template("/loginprompt.html", function="view categories", title = categoryname)
+    
+@app.route("/edit", methods=["GET", "POST"])
+def edit():
+    if session.get("user_id", 0):
+        user_id = session["user_id"]
+        if request.method == "GET":
+            return render_template("editpage.html")
+        elif request.method == "POST":
+            if session["csrf_token"] != request.form["csrf_token"]:
+                return render_template("error.html", message = "Forbidden")
+            newbio = request.form["newbio"]
+            password = request.form["password"]
+            if users.updatebio(user_id, newbio, password):
+                return render_template("editpage.html", message="Profile text updated succesfully")
+            else:
+                return render_template("error.html", message="Profile update failed. Check password.")
+    else:
+        return render_template("loginprompt.html", function="edit your profile", title = "Log in to edit profile")
+    
+@app.route("/changepassword", methods=["POST"])
+def changepassword():
+    if session.get("user_id", 0):
+        user_id = session["user_id"]
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return render_template("error.html", message = "Forbidden")
+        newpassword = request.form["newpassword"]
+        newpassword2 = request.form["newpassword2"]
+        oldpassword = request.form["oldpassword"]
+        if newpassword != newpassword2:
+            return render_template("editpage.html", message="New passwords do not match")
+        else:
+            if users.changepassword(user_id, oldpassword, newpassword):
+                return render_template("editpage.html", message="Password changed")
+            else:
+                return render_template("editpage.html", message="Password change failed. Your password was not changed.")
+    else:
+        return render_template("loginprompt.html", function="change your password", title="Log in to change password")

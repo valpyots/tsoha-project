@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
+            <h1>{{ profilename[0] }}'s profile</h1>
             <p>{{ message }}</p>
             {% if useradminstatus %}
             <p>This user is an admin.</p>
@@ -23,6 +24,11 @@
             {% endif %}
             {% if visibility == True or adminstatus == True %}
             <p>{{ profilename[0] }} has posted {{ postamount }} times.</p>
+            <hr>
+            <p>About: {{ biotext }}</p>
+            {% if session.user_id == user_id %}
+            <a href="/edit">Edit your profile</a>
+            {% endif %}
             <hr>
             {% for post in profileposts %}
             <h2>{{ post[0] }}</h2>
