@@ -10,19 +10,23 @@
             <p><a href="/">Return to the front page</a></p>
             <form action="/register" method="POST">
                 <div class="form-group">
-                    <p><label for="username">Username: (Between 1-20 characters)</label><br>
-                    <input class="formcontrol" type="text" name="username" maxlength="20" required></p>
+                    <p><label for="username">Username</label><br>
+                    <input class="formcontrol" type="text" name="username" maxlength="20" required><br>
+                    <small>Between 1-20 characters, required</small></p>
                 </div>
                 <div class="form-group">
-                    <p><label for="password">Password: (Minimum 8 characters)</label><br>
-                    <input class="formcontrol" type="password" name="password" minlength="8" maxlength="99" required></p>
-                    <p><label for="password2">Repeat password:</label><br>
-                    <input class="formcontrol" type="password" name="password2" minlength="8" maxlength="99" required></p>
+                    <p><label for="password">Password</label><br>
+                    <input class="formcontrol" type="password" name="password" minlength="8" maxlength="99" required><br>
+                    <small>Minimum 8 characters, required</small></p>
+                    <p><label for="password2">Repeat password</label><br>
+                    <input class="formcontrol" type="password" name="password2" minlength="8" maxlength="99" required><br>
+                    <small>Repeat your password to make sure it is correct.</small></p>
                 </div>
                 <div class="form-group">
                     <label for="visibility">Allow other users to see your profile?</label><br>
                     <input class="formcontrol" type="radio" name="visibility" value="0"> Yes<br>
                     <input class="formcontrol" type="radio" name="visibility" value="1"> No<br>
+                    <small>You can change this later.</small><br>
                 </div>
                 <br>
                 <div class="form-group">

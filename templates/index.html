@@ -57,15 +57,23 @@
             <p>Topics by date posted, newest first</p>
             <hr>
             {% for topic in topicsnew %}
-            <h3>{{ topic[0] }}</h3>
+            <a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/respond/{{ topic[4] }}"><h3>{{ topic[0] }}</h3></a>
             <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
             <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
             <p>{{ topic[1] }}</p>
             <p>Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</p>
             <p>Responses: {{ topic[8] }}</p>
-            <form action="/respond/{{topic[4]}}" method="GET">
-            <input class="btn btn-secondary" type="submit" value="Comment">
-            </form>
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTopicResponse{{topic[4]}}" aria-expanded="false" aria-controls="collapseTopicResponse{{topic[4]}}">
+                Comment
+            </button>
+            <div class="collapse" id="collapseTopicResponse{{ topic[4] }}">  
+            <form action="/respond/{{ topic[4] }}" method="POST">
+                <p>Post a comment on this topic</p>
+                <textarea name="content" cols="100%"></textarea></p><br>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input class="btn btn-primary" type="submit" value="Comment">
+                </form>
+            </div>
             <hr>
             {% endfor %}
         </div>
@@ -73,7 +81,7 @@
             <p>Topics by date posted, oldest first</p>
             <hr>
             {% for topic in topicsold %}
-            <h3>{{ topic[0] }}</h3>
+            <a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/respond/{{ topic[4] }}"><h3>{{ topic[0] }}</h3></a>
             <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
             <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
             <p>{{ topic[1] }}</p>
@@ -89,7 +97,7 @@
             <p>Topics by comments, most commented on first</p>
             <hr>
             {% for topic in topicsmost %}
-            <h3>{{ topic[0] }}</h3>
+            <a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/respond/{{ topic[4] }}"><h3>{{ topic[0] }}</h3></a>
             <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
             <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
             <p>{{ topic[1] }}</p>
@@ -105,7 +113,7 @@
             <p>Topics by comments, least commented on first</p>
             <hr>
             {% for topic in topicsleast %}
-            <h3>{{ topic[0] }}</h3>
+            <a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/respond/{{ topic[4] }}"><h3>{{ topic[0] }}</h3></a>
             <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
             <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
             <p>{{ topic[1] }}</p>
