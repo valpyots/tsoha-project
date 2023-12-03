@@ -5,15 +5,26 @@ import users
 
 #Function returns all topics
 def get_topic_list():
-    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.id NOT IN (SELECT topicid FROM deletedtopics) AND T.categoryid = C.id ORDER BY T.id DESC")
+    sql = text("SELECT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id, (SELECT COUNT(A.messageid) FROM topicmessages A WHERE T.id = A.topicid AND A.messageid NOT IN (SELECT messageid FROM deletedmessages)) FROM topics T, users U, categories C WHERE T.user_id=U.id AND T.id NOT IN (SELECT topicid FROM deletedtopics) AND T.categoryid = C.id ORDER BY T.id DESC")
+    res = db.session.execute(sql).fetchall()
+    return res
+
+#Function to get topics sorted by responses
+def get_topics_most_responses():
+    sql = text("SELECT DISTINCT T.title, T.message, U.username, T.sent_at, T.id, U.id, C.name, C.id, (SELECT COUNT(A.messageid) FROM topicmessages A WHERE T.id = A.topicid AND A.messageid NOT IN (SELECT messageid FROM deletedmessages)) AS ramount FROM topics T, users U, categories C, topicmessages A WHERE T.user_id=U.id AND T.id NOT IN (SELECT topicid FROM deletedtopics) AND T.categoryid = C.id AND A.messageid NOT IN (SELECT messageid FROM deletedmessages) ORDER BY ramount DESC, T.id DESC")
     res = db.session.execute(sql).fetchall()
     return res
 
 #Function returns all responses to a given topic by topic id
 def get_responses(topic_id):
     sql = text("SELECT M.content, U.username, M.sent_at, M.user_id, M.id FROM messages M, Users U, Topicmessages A WHERE M.user_id=U.id AND M.id = A.messageid AND A.topicid = :topic_id AND M.id NOT IN (SELECT messageid FROM deletedmessages) ORDER BY M.id DESC")
-    result = db.session.execute(sql, {"topic_id":topic_id})
-    return result.fetchall()
+    res = db.session.execute(sql, {"topic_id":topic_id})
+    return res.fetchall()
+
+def get_response_amount(topic_id):
+    sql = text("SELECT COUNT(A.messageid) FROM topicmessages A, topics T WHERE T.id = A.topicid AND T.id = :topic_id AND A.messageid NOT IN (SELECT messageid FROM deletedmessages)")
+    res = db.session.execute(sql,{"topic_id":topic_id}).fetchone()
+    return res
 
 #Function for posting a new topic
 def newtopic(title, message, categoryname):

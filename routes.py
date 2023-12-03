@@ -5,8 +5,11 @@ import messages, users
 
 @app.route("/")
 def index():
-    topiclist = messages.get_topic_list()
-    return render_template("index.html", count=len(topiclist), topics=topiclist, username = users.username())
+    topiclistnew = messages.get_topic_list()
+    topiclistold = reversed(messages.get_topic_list())
+    topicslistmostres = messages.get_topics_most_responses()
+    topicslistleastres = reversed(messages.get_topics_most_responses())
+    return render_template("index.html", count=len(topiclistnew), topicsnew=topiclistnew,  topicsold=topiclistold, topicsmost=topicslistmostres, topicsleast = topicslistleastres, username = users.username())
 
 # Route functionality for new user registrations
 @app.route("/register", methods=["GET", "POST"])
@@ -75,6 +78,7 @@ def newtopic():
 def respond(topic):
     if session.get("user_id", 0):
         list = messages.get_responses(topic)
+        amount = messages.get_response_amount(topic)[0]
         title = messages.get_topic_title(topic)
         startmessage = messages.get_topic_message(topic)
         startuser = messages.get_topic_user(topic)
@@ -82,7 +86,7 @@ def respond(topic):
         category = messages.get_category_name(categoryid)
         adminstatus = users.get_admin_status(session["user_id"])
         if request.method == "GET":
-            return render_template("topicpage.html", topic=topic, category=category, categoryid = categoryid, messages=list, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
+            return render_template("topicpage.html", topic=topic, category=category, categoryid = categoryid, messages=list, amount=amount, title=title, startuser=startuser, startmessage=startmessage, username=users.username(), adminstatus = adminstatus)
         if request.method == "POST":
             if session["csrf_token"] != request.form["csrf_token"]:
                 return render_template("error.html", message="Forbidden")

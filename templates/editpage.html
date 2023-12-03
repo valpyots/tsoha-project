@@ -12,9 +12,9 @@
     <input class="formcontrol" name="visibility" value="0" type="radio"> Yes<br>
     <input class="formcontrol" name="visibility" value="1" type="radio"> No<br>
     </div>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><br>
     <div class="form-group">
-    <input class="formcontrol" type="submit" value="Change profile visibility">
+    <input class="btn btn-danger" type="submit" value="Change profile visibility">
     </div>
 </form>
 <hr>
@@ -28,8 +28,8 @@
     <input class="formcontrol" type="password" name="password"><br>
     </div>
     <div class="form-group">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input class="formcontrol" type="submit" value="Change profile text"><br>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><br>
+    <input class="btn btn-danger" type="submit" value="Change profile text"><br>
     </div>
 </form>
 <hr>
@@ -45,11 +45,11 @@
     </div>
     <div class="form-group">
     <label for="oldpassword">Confirm with old password:</label><br>
-    <input type="password" name="oldpassword">
+    <input type="password" name="oldpassword"><br>
     </div>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><br>
     <div class="form-group">
-    <input type="submit" value="Change password">
+    <input class="btn btn-danger" type="submit" value="Change password">
     </div>
 </form>
 </div>

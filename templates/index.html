@@ -10,44 +10,114 @@
             </div>
             <br>
         </div>
-        <div class="row">
-        <div class="col-sm">
-            <h2>Post a new topic</h2>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTopicPost" aria-expanded="false" aria-controls="collapseTopicPost">
+                Post a new topic
+              </button><br>
+              <div class="collapse" id="collapseTopicPost">          
             <form action="/newtopic" method="POST">
             <div class="form-group">
-                <p><label for="category">Choose a category:</label></p>
-                <input class="formcontrol" type="text" name="category" value="None">
+                <label for="category">Category</label><br>
+                <input class="formcontrol" type="text" name="category" value="uncategorized">
+                <small>Optional</small>
             </div>
             <div class="form-group">
-                <p><label for="title">Choose a title for your topic: (Required)</label></p>
+                <label for="title">Title for topic</label><br>
                 <input class="formcontrol" type="text" name="title" maxlength="100" required>
+                <small>Required</small>
             </div>
             <div class="form-group">
-                <p><label for="message">Start your topic with a message:(0-5000 characters)</label></p>
-                <textarea name="message" maxlength="5000" cols="55"></textarea></p>
+                <label for="message">Start your topic with a message</label><br>
+                <textarea name="message" maxlength="5000" cols="55"></textarea><br>
+                <small>0-5000 characters, optional</small>
             </div>
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <div class="form-group">
-                <input type="submit" value="Post">
+                <input class="btn btn-primary" type="submit" value="Post">
                 </div>
             </form>
         </div>
-        <div class="col-sm">
-            <h2>Topics</h2>
-            <p>Current topic count: {{ count }}</p>
-            {% for topic in topics %}
-            <h3>{{ topic[0] }}</h3></br>
-            <p>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></p><br>
-            Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a><br>
-            <p>{{ topic[1] }}</p></br>
-            Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</br>
+        <h5>Sort topic list by</h5>
+        <ul class="nav nav-tabs" id="topicSort" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="timeDesc-tab" data-bs-toggle="tab" data-bs-target="#timeDesc-tab-pane" type="button" role="tab" aria-controls="timeDesc-tab-pane" aria-selected="true">New</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="timeAsc-tab" data-bs-toggle="tab" data-bs-target="#timeAsc-tab-pane" type="button" role="tab" aria-controls="timeAsc-tab-pane" aria-selected="false">Old</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="commentsHigh-tab" data-bs-toggle="tab" data-bs-target="#commentsHigh-tab-pane" type="button" role="tab" aria-controls="commentsHigh-tab-pane" aria-selected="false">Most commented</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="commentsLow-tab" data-bs-toggle="tab" data-bs-target="#commentsLow-tab-pane" type="button" role="tab" aria-controls="commentsLow-tab-pane" aria-selected="false">Least commented</button>
+            </li>
+          </ul>
+          <p>Current topic count: {{ count }}</p>
+          <div class="tab-content" id="topicSort">
+            <div class="tab-pane fade show active" id="timeDesc-tab-pane" role="tabpanel" aria-labelledby="timeDesc-tab" tabindex="0">
+            <p>Topics by date posted, newest first</p>
+            <hr>
+            {% for topic in topicsnew %}
+            <h3>{{ topic[0] }}</h3>
+            <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
+            <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
+            <p>{{ topic[1] }}</p>
+            <p>Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Responses: {{ topic[8] }}</p>
             <form action="/respond/{{topic[4]}}" method="GET">
-            <input type="submit" value="Comment">
+            <input class="btn btn-secondary" type="submit" value="Comment">
             </form>
             <hr>
             {% endfor %}
         </div>
-    </div>
+        <div class="tab-pane fade" id="timeAsc-tab-pane" role="tabpanel" aria-labelledby="timeAsc-tab" tabindex="0">
+            <p>Topics by date posted, oldest first</p>
+            <hr>
+            {% for topic in topicsold %}
+            <h3>{{ topic[0] }}</h3>
+            <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
+            <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
+            <p>{{ topic[1] }}</p>
+            <p>Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Responses: {{ topic[8] }}</p>
+            <form action="/respond/{{topic[4]}}" method="GET">
+            <input class="btn btn-secondary" type="submit" value="Comment">
+            </form>
+            <hr>
+            {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="commentsHigh-tab-pane" role="tabpanel" aria-labelledby="commentsHigh-tab" tabindex="0">
+            <p>Topics by comments, most commented on first</p>
+            <hr>
+            {% for topic in topicsmost %}
+            <h3>{{ topic[0] }}</h3>
+            <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
+            <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
+            <p>{{ topic[1] }}</p>
+            <p>Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Responses: {{ topic[8] }}</p>
+            <form action="/respond/{{topic[4]}}" method="GET">
+            <input class="btn btn-secondary" type="submit" value="Comment">
+            </form>
+            <hr>
+            {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="commentsLow-tab-pane" role="tabpanel" aria-labelledby="commentsLow-tab" tabindex="0">
+            <p>Topics by comments, least commented on first</p>
+            <hr>
+            {% for topic in topicsleast %}
+            <h3>{{ topic[0] }}</h3>
+            <small>In category <a href="/category/{{ topic[7] }}">{{ topic[6] }}</a></small>
+            <p>Sent by <a href="/userpage/{{ topic[5] }}">{{ topic[2] }}</a></p>
+            <p>{{ topic[1] }}</p>
+            <p>Posted on {{ topic[3].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Responses: {{ topic[8] }}</p>
+            <form action="/respond/{{topic[4]}}" method="GET">
+            <input class="btn btn-secondary" type="submit" value="Comment">
+            </form>
+            <hr>
+            {% endfor %}
+        </div>
+        </div>
             {% else %}
             <!--- View when not logged in-->
             <div class="col-sm">
@@ -68,7 +138,7 @@
                     <input class="formcontrol" type="password" name="password"></p>
                 </div>
                 <div class="form-group">
-                    <input class="formcontrol" type="submit" value="Log in">
+                    <input class="btn btn-primary" type="submit" value="Log in">
                 </div>
             </form>
             <h2>You can register <a href="/register">here</a></h2>
