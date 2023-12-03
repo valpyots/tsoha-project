@@ -174,6 +174,11 @@ def category(categoryid):
     else:
         return render_template("/loginprompt.html", function="view categories", title = categoryname)
     
+@app.route("/categories", methods=["GET"])
+def categories():
+    catlist = messages.get_categories()
+    return render_template("categories.html", catlist = catlist)
+    
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
     if session.get("user_id", 0):

@@ -113,6 +113,11 @@ def create_category(catname):
     res = db.session.execute(sql, {"catname": catname}).fetchone()
     return res[0]
 
+def get_categories():
+    sql = text("SELECT C.id, C.name FROM categories C ORDER BY C.id")
+    res = db.session.execute(sql)
+    return res.fetchall()
+
 #Function to return category id by category name
 def get_category_id(catname):
     sql = text("SELECT C.id FROM categories C WHERE C.name = :catname")

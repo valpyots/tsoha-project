@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>All categories</h2>
+    <p>Here you can see a listing of all categories. Categories are created by users automatically when posting to a category that does not yet exist.</p>
+        {% for cat in catlist %}
+        <a href="/category/{{ cat[0] }}">{{ cat[1] }}</a><br>
+        {% endfor %}
+</div>
+{% endblock %}
