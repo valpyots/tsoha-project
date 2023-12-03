@@ -54,12 +54,20 @@
             <p>User posts:<p>
             {% endif %}
             {% for post in profileposts %}
-            <h2>{{ post[0] }}</h2>
+            <a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/respond/{{ post[2] }}"><h3>{{ post[0] }}</h3></a>
             <p> In category <a href="/category/{{ post[4] }}">{{ post[3] }}</a></p>
             <p>{{ post[1] }}</p>
-            <form action="/respond/{{ post[2] }}" method="GET">
-            <input class="btn btn-primary" type="submit" value="Comment">
-            </form>
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTopicResponse{{ post[2] }}" aria-expanded="false" aria-controls="collapseTopicResponse{{ post[2] }}">
+                Comment
+            </button>
+            <div class="collapse" id="collapseTopicResponse{{ post[2] }}">  
+            <form action="/respond/{{ post[2] }}" method="POST">
+                <p>Post a comment on this topic</p>
+                <textarea name="content" cols="100%"></textarea></p><br>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input class="btn btn-primary" type="submit" value="Comment">
+                </form>
+            </div>
             <hr>
             {% endfor %}
             {% if postamount == 0 %}
