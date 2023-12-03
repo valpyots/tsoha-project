@@ -21,8 +21,7 @@ Note that this application is currently not deployed anywhere. To test it:
 	$ flask run
 
 The database schema currently creates an admin account for testing. Both username and password are "admin".
-This is obviously not very safe for any actual purpose, and in the future I'd like to implement actual admin
-creation and password changing.
+The password should be changed immediately upon first login.
 
 The application currently allows an user to:
 
@@ -36,7 +35,9 @@ The application currently allows an user to:
 
 - allow others to view other user's profiles and their posts, if set to public
 
-- browse all posts, browse post by category
+- browse all posts, browse post by category, browse categories
+
+- sort posts by date or comment amount, both ascending and descending
 
 - set a profile bio to describe user
 
@@ -52,12 +53,10 @@ The application also supports admin users, who can:
 
 - give other users admin rights
 
-- sort posts by date or comment amount, both ascending and descending
-
 Features I would implement if I had more time:
 
  - more admin tools (set profile visibility, temporary bans that end automatically, hide messages instead of deleting them)
 
- - friend lists
+ - friend lists, private messages between friends
 
  - private/public categories, more functionality for categories
