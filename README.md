@@ -38,7 +38,7 @@ The application currently allows an user to:
 
 - browse all posts, browse post by category
 
--  set a profile bio to describe user
+- set a profile bio to describe user
 
 - edit own user data (change password, bio and profile visibility)
 
@@ -50,18 +50,14 @@ The application also supports admin users, who can:
 
 - block users from posting
 
-Features that I still plan to implement:
+- give other users admin rights
 
-- sorting posts by date or comment amount, both ascending and descending
+- sort posts by date or comment amount, both ascending and descending
 
-- in-app admin creation (currently admin users can only be created from the database)
-
-Features I would/could implement if I had more time:
+Features I would implement if I had more time:
 
  - more admin tools (set profile visibility, temporary bans that end automatically, hide messages instead of deleting them)
 
- - less generic user interface
+ - friend lists
 
- - friendlists
-
- - private/public categories
+ - private/public categories, more functionality for categories
