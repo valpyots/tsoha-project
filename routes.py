@@ -170,7 +170,8 @@ def category(categoryid):
     categoryname = messages.get_category_name(categoryid)
     if session.get("user_id", 0):
         catlist = messages.get_category_topics(categoryid)
-        return render_template("categorypage.html", categoryposts = catlist, categoryname = categoryname, postamount = len(catlist))
+        catlistold = reversed(catlist)
+        return render_template("categorypage.html", categoryposts = catlist, categorypostsold = catlistold, categoryname = categoryname, postamount = len(catlist))
     else:
         return render_template("/loginprompt.html", function="view categories", title = categoryname)
     
