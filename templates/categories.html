@@ -4,8 +4,9 @@
 <div class="container">
     <h2>All categories</h2>
     <p>Here you can see a listing of all categories. Categories are created by users automatically when posting to a category that does not yet exist.</p>
+    <p>There are currently <b>{{ catcount }}</b> categories.</p><br>
         {% for cat in catlist %}
-        <a href="/category/{{ cat[0] }}">{{ cat[1] }}</a><br>
+        <h3><a class="link-offset-1 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-100-hover" href="/category/{{ cat[0] }}">{{ cat[1] }}</a><br></h3>
         {% endfor %}
 </div>
 {% endblock %}

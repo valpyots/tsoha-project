@@ -3,6 +3,7 @@ from flask import render_template, redirect, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import messages, users
 
+# Front page route
 @app.route("/")
 def index():
     topiclistnew = messages.get_topic_list()
@@ -26,6 +27,7 @@ def register():
         else:
             return render_template("error.html", message="Registration failed.")
 
+# Route for logging in
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -38,11 +40,13 @@ def login():
         else:
             return render_template("error.html", message="User not found. Check username and password.")
 
+# Route for logging out
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect("/")
 
+# Route for admin creation
 @app.route("/makeadmin/<int:user_id>", methods=["POST"])
 def makeadmin(user_id):
     if session.get("user_id", 0):
@@ -60,6 +64,7 @@ def makeadmin(user_id):
         else:
             return render_template("error.html", message="You do not have permission to give out admin rights")
 
+# Route for posting a new topic
 @app.route("/newtopic", methods=["POST"])
 def newtopic():
     category = request.form["category"].lower()
@@ -74,6 +79,7 @@ def newtopic():
     else:
         return render_template("error.html", message="Failed to post new topic")
 
+# Route for responding to a topic
 @app.route("/respond/<int:topic>", methods=["GET", "POST"])
 def respond(topic):
     if session.get("user_id", 0):
@@ -101,10 +107,12 @@ def respond(topic):
     else:
         return render_template("loginprompt.html", title=messages.get_topic_title(topic)[0], function="respond")
 
+# Route for help section of the site
 @app.route("/help", methods=["GET"])
 def help():
     return render_template("help.html")
 
+# Route for deleting topics
 @app.route("/hidetopic/<int:topic>", methods=["POST"])
 def hidetopic(topic):
     if session["user_id"] == messages.get_topic_user(topic)[0][0]:
@@ -115,7 +123,8 @@ def hidetopic(topic):
         return redirect("/")
     else:
         return render_template("error.html", message="You do not have permission to delete this topic")
-    
+
+# Route for deleting messages
 @app.route("/hidemessage/<int:messageid>", methods=["POST"])
 def hidemessage(messageid):
     if session["user_id"] == messages.get_message_user(messageid)[0][0]:
@@ -127,6 +136,7 @@ def hidemessage(messageid):
     else:
         return render_template("error.html", message="You do not have permission to delete this message")
     
+# Route for userpages
 @app.route("/userpage/<int:user_id>", methods=["GET"])
 def userpage(user_id):
     if session.get("user_id", 0):
@@ -148,7 +158,8 @@ def userpage(user_id):
             return render_template("userpage.html", message="This is a user's personal profile page.", user_id = user_id, profilename = profilename, profileposts = list, postamount = len(list), visibility = visibility, adminstatus = adminstatus, useradminstatus = useradminstatus, canpost = canpost, biotext = biotext)
     else:
         return render_template("loginprompt.html", function="view userpages", title = str(users.get_username(user_id)) + "'s userpage")
-    
+
+# Route for issuing bans ie. blocking an user from posting    
 @app.route("/banuser/<int:user_id>", methods=["POST"])
 def banuser(user_id):
     if users.get_admin_status(session["user_id"]):
@@ -157,6 +168,7 @@ def banuser(user_id):
     else:
         render_template("error.html", message="You do not have permission to block this user from posting.")
 
+# Route to unban user ie. allowing a blocked user to past again
 @app.route("/unbanuser/<int:user_id>", methods=["POST"])
 def unbanuser(user_id):
     if users.get_admin_status(session["user_id"]):
@@ -165,6 +177,7 @@ def unbanuser(user_id):
     else:
         render_template("error.html", message="You do not have permission to allow this user to post.")
 
+# Route for category pages
 @app.route("/category/<int:categoryid>", methods=["GET"])
 def category(categoryid):
     categoryname = messages.get_category_name(categoryid)
@@ -174,12 +187,15 @@ def category(categoryid):
         return render_template("categorypage.html", categoryposts = catlist, categorypostsold = catlistold, categoryname = categoryname, postamount = len(catlist))
     else:
         return render_template("/loginprompt.html", function="view categories", title = categoryname)
-    
+
+# Route for page listing all categories  
 @app.route("/categories", methods=["GET"])
 def categories():
     catlist = messages.get_categories()
-    return render_template("categories.html", catlist = catlist)
-    
+    catcount = len(catlist)
+    return render_template("categories.html", catlist = catlist, catcount = catcount)
+
+# Route for editing user data and profile page    
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
     if session.get("user_id", 0):
@@ -197,7 +213,8 @@ def edit():
                 return render_template("error.html", message="Profile update failed. Check password.")
     else:
         return render_template("loginprompt.html", function="edit your profile", title = "Log in to edit profile")
-    
+
+# Password changing    
 @app.route("/changepassword", methods=["POST"])
 def changepassword():
     if session.get("user_id", 0):
@@ -216,7 +233,9 @@ def changepassword():
                 return render_template("editpage.html", message="Password change failed, your password was not changed")
     else:
         return render_template("loginprompt.html", function="change your password", title="Log in to change password")
-    
+
+# Setting for if other users are allowed to view user's profile page. Uses integers to allow future expansion in setting
+# user privacy options without database changes.    
 @app.route("/profilevisibility", methods=["POST"])
 def profilevisibility():
     if session.get("user_id", 0):
