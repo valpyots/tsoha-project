@@ -27,7 +27,7 @@
         {% endif %}
             <form action="/respond/{{ topic }}" method="POST">
             <p>Post a comment on this topic</p>
-            <textarea name="content" cols="100%"></textarea></p><br>
+            <textarea name="content" cols="100%" required></textarea></p><br>
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input class="btn btn-secondary" type="submit" value="Comment">
             </form>
